@@ -4,12 +4,12 @@ package com.tpi.agencia.tpibda.Entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "ZONASPELIGROSAS")
+@Table(name = "Zonas_Peligrosas")
 public class ZonaPeligrosa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private Long id;
+    private Integer id;
 
     @Column(name = "NOMBRE", nullable = false)
     private String nombre;
@@ -29,7 +29,7 @@ public class ZonaPeligrosa {
     public ZonaPeligrosa() {
     }
 
-    public ZonaPeligrosa(Long id, String nombre, Double latNoroeste, Double lonNoroeste, Double latSureste, Double lonSureste) {
+    public ZonaPeligrosa(Integer id, String nombre, Double latNoroeste, Double lonNoroeste, Double latSureste, Double lonSureste) {
         this.id = id;
         this.nombre = nombre;
         this.latNoroeste = latNoroeste;
@@ -50,11 +50,11 @@ public class ZonaPeligrosa {
                 '}';
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
