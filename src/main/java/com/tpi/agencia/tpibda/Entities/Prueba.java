@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "PRUEBAS")
+@Table(name = "Pruebas")
 public class Prueba {
 
     @Id
@@ -20,7 +20,7 @@ public class Prueba {
     @Column(name = "FECHA_HORA_FIN")
     private LocalDateTime fechaHoraFin;
 
-    @Column(name = "COMENTARIO")
+    @Column(name = "COMENTARIOS")
     private String comentario;
 
     public Prueba() {

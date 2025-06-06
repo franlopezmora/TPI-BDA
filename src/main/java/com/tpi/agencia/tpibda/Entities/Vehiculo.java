@@ -35,7 +35,7 @@ public class Vehiculo {
     @Column(name = "ANIO", nullable = false)
     private Integer anio ;  // valor por defecto en la BD
 
-    @OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "Vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Posicion> posiciones = new ArrayList<>();
 
     // ... constructor, getters/setters, auxiliares ...
