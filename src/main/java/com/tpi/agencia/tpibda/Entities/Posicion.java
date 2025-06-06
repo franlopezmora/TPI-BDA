@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "POSICIONES")
+@Table(name = "Posiciones")
 public class Posicion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
     @ManyToOne
@@ -18,10 +19,10 @@ public class Posicion {
     @Column(name = "FECHA_HORA", nullable = false)
     private LocalDateTime fechaHora;
 
-    @Column(nullable = false)
+    @Column(name = "LATITUD",nullable = false)
     private Double latitud;
 
-    @Column(nullable = false)
+    @Column(name = "LONGITUD",nullable = false)
     private Double longitud;
 
     // Getters y setters
