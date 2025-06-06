@@ -1,7 +1,7 @@
 package com.tpi.agencia.tpibda.Entities;
 
-
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,19 +13,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "MARCA")
+@Table(name = "MARCAS")
 public class Marca {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
     private Integer id;
 
+    @Column(name = "NOMBRE", nullable = false)
     private String nombre;
 
     @OneToMany(mappedBy = "marca", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Modelo> modelos = new ArrayList<>();
 
-    public Marca() {}
+    public Marca() {
+        // Constructor vacío para JPA
+    }
+
+    // --- Getters y Setters ---
 
     public Integer getId() {
         return id;
@@ -50,6 +56,8 @@ public class Marca {
     public void setModelos(List<Modelo> modelos) {
         this.modelos = modelos;
     }
+
+    // Métodos auxiliares para mantener la relación bidireccional
 
     public void addModelo(Modelo modelo) {
         modelos.add(modelo);

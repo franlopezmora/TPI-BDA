@@ -2,6 +2,7 @@ package com.tpi.agencia.tpibda.Entities;
 
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -16,21 +17,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "VEHICULO")
+@Table(name = "vehiculo")
 public class Vehiculo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
     private Integer id;
 
+    @Column(name = "PATENTE", nullable = false)
     private String patente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_MODELO", nullable = false)
     private Modelo modelo;
 
+    @Column(name = "ANIO", nullable = false)
+    private Integer anio ;  // valor por defecto en la BD
+
     @OneToMany(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Posicion> posiciones = new ArrayList<>();
+
+    // ... constructor, getters/setters, auxiliares ...
 
     public Vehiculo() {}
 
@@ -58,21 +66,13 @@ public class Vehiculo {
         this.modelo = modelo;
     }
 
-    public List<Posicion> getPosiciones() {
-        return posiciones;
+    public Integer getAnio() {
+        return anio;
     }
 
-    public void setPosiciones(List<Posicion> posiciones) {
-        this.posiciones = posiciones;
+    public void setAnio(Integer anio) {
+        this.anio = anio;
     }
 
-    public void addPosicion(Posicion posicion) {
-        posiciones.add(posicion);
-        posicion.setVehiculo(this);
-    }
 
-    public void removePosicion(Posicion posicion) {
-        posiciones.remove(posicion);
-        posicion.setVehiculo(null);
-    }
 }
