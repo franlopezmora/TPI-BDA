@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "MODELO")
+@Table(name = "Modelo")
 public class Modelo {
 
     @Id
@@ -31,7 +31,7 @@ public class Modelo {
     @JoinColumn(name = "ID_MARCA", nullable = false)
     private Marca marca;
 
-    @OneToMany(mappedBy = "modelo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "Modelo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vehiculo> vehiculos = new ArrayList<>();
 
     public Modelo() {}

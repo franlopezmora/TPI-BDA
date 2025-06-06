@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "MARCAS")
+@Table(name = "Marcas")
 public class Marca {
 
     @Id
@@ -24,7 +24,7 @@ public class Marca {
     @Column(name = "NOMBRE", nullable = false)
     private String nombre;
 
-    @OneToMany(mappedBy = "marca", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "Marca", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Modelo> modelos = new ArrayList<>();
 
     public Marca() {
