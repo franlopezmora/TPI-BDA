@@ -1,4 +1,4 @@
-package com.tpi.agencia.tpibda.Entities;
+package main.java.com.tpi.agencia.tpibda.Entities;
 
 public class Prueba {
 }

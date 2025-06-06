@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "POSICIONES")
 public class Posicion {
-
+    public Posicion (){};
     @Id
     private Long id;
     @ManyToOne
