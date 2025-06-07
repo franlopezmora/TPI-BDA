@@ -3,7 +3,7 @@ package com.tpi.agencia.tpibda.Entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name= "EMPLEADOS")
+@Table(name= "Empleados")
 public class Empleado {
 
     @Id
