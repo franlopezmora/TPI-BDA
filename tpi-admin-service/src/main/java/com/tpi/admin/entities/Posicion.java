@@ -13,7 +13,11 @@ public class Posicion {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_VEHICULO", nullable = false)
+    @JoinColumn(
+            name = "ID_VEHICULO",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "Posiciones_Vehiculos_FK")
+    )
     private Vehiculo vehiculo;
 
     @Column(name = "FECHA_HORA", nullable = false)
