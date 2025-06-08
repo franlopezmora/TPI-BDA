@@ -1,0 +1,14 @@
+# Java
+/target
+*.log
+
+# IntelliJ
+.idea
+*.iml
+
+# Mac / Windows
+.DS_Store
+Thumbs.db
+
+# Docker
+.env
