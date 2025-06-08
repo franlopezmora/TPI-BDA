@@ -1,14 +1,32 @@
-# Java
-/target
-*.log
+# Java / Maven
+**/target/
+**/*.log
 
-# IntelliJ
-.idea
-*.iml
+# Maven Wrapper
+**/.mvn/
+**/mvnw
+**/mvnw.cmd
 
-# Mac / Windows
+# IDEs
+**/.idea/
+**/*.iml
+.vscode/
+
+# OS-specific
 .DS_Store
 Thumbs.db
 
-# Docker
+# Docker y base de datos
+docker/
 .env
+**/*.db  # Ignora archivos binarios como .sqlite o .mv.db, pero no los SQL
+
+# Permitir SQL si son dumps o scripts de schema
+!**/*.sql
+
+# Logs y cachés
+*.out
+*.bak
+*.swp
+*.tmp
+*.swo
