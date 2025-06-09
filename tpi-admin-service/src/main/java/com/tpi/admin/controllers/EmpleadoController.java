@@ -1,10 +1,9 @@
 package com.tpi.admin.controllers;
 
 import com.tpi.admin.entities.Empleado;
-import com.tpi.admin.services.EmpleadoService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.tpi.admin.repositories.EmpleadoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -12,14 +11,16 @@ import java.util.List;
 @RequestMapping("/empleados")
 public class EmpleadoController {
 
-    private final EmpleadoService empleadoService;
-
-    public EmpleadoController(EmpleadoService empleadoService) {
-        this.empleadoService = empleadoService;
-    }
+    @Autowired
+    private EmpleadoRepository empleadoRepository;
 
     @GetMapping
-    public List<Empleado> getEmpleados() {
-        return empleadoService.listarEmpleados();
+    public List<Empleado> getAll() {
+        return empleadoRepository.findAll();
+    }
+
+    @PostMapping
+    public Empleado create(@RequestBody Empleado empleado) {
+        return empleadoRepository.save(empleado);
     }
 }

@@ -1,6 +1,7 @@
 package com.tpi.admin.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -39,6 +40,7 @@ public class Vehiculo {
     private Integer anio ;  // valor por defecto en la BD
 
     @OneToMany(mappedBy = "vehiculo")
+    @JsonIgnore
     private List<Posicion> posiciones = new ArrayList<>();
 
     public Vehiculo() {
