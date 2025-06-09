@@ -26,15 +26,24 @@ public class Prueba {
     private String comentario;
 
     @ManyToOne
-    @JoinColumn(name = "ID_EMPLEADO")
+    @JoinColumn(
+            name = "ID_EMPLEADO",
+            foreignKey = @ForeignKey(name = "Pruebas_Empleados_FK")
+    )
     private Empleado empleado;
 
     @ManyToOne
-    @JoinColumn(name = "ID_INTERESADO")
+    @JoinColumn(
+            name = "ID_INTERESADO",
+            foreignKey = @ForeignKey(name = "Pruebas_Interesados_FK")
+    )
     private Interesado interesado;
 
     @ManyToOne
-    @JoinColumn(name = "ID_VEHICULO")
+    @JoinColumn(
+            name = "ID_VEHICULO",
+            foreignKey = @ForeignKey(name = "Pruebas_Vehiculos_FK")
+    )
     private Vehiculo vehiculo;
 
     @OneToMany(mappedBy = "prueba")

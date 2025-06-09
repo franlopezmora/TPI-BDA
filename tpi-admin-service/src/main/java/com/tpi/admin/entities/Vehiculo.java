@@ -28,7 +28,11 @@ public class Vehiculo {
     private String patente;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_MODELO", nullable = false)
+    @JoinColumn(
+            name = "ID_MODELO",
+            nullable = false,
+            foreignKey = @jakarta.persistence.ForeignKey(name = "Vehiculos_Modelos_FK")
+    )
     private Modelo modelo;
 
     @Column(name = "ANIO", nullable = false)

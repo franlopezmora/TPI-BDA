@@ -20,8 +20,13 @@ public class Modelo {
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_MARCA", nullable = false)
+    @JoinColumn(
+            name = "ID_MARCA",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "Modelos_Marcas_FK")
+    )
     private Marca marca;
+
 
     @OneToMany(mappedBy = "modelo")
     private List<Vehiculo> vehiculos = new ArrayList<>();
