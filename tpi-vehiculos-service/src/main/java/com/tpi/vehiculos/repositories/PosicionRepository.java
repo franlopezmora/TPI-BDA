@@ -1,9 +1,10 @@
 package com.tpi.vehiculos.repositories;
 
-import com.tpi.vehiculos.entities.Modelo;
+import com.tpi.vehiculos.entities.Posicion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ModeloRepository extends JpaRepository<Modelo, Long> {
+public interface PosicionRepository extends JpaRepository<Posicion, Long> {
 }
+
