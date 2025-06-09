@@ -42,6 +42,7 @@ Este proyecto cuenta con un script que construye todos los microservicios y leva
 
 ```bash
 ./build-all.sh
+docker-compose up --build
 ```
 
 Este comando:
@@ -52,6 +53,19 @@ Este comando:
 ✅ Inicia todos los servicios juntos
 
 > 💡 Si usás Windows, asegurate de tener Git Bash o WSL para ejecutar el `.sh`. Si no, podés correr los comandos manualmente desde el archivo.
+
+
+#### 3. Resetear el entorno desde cero (base limpia)
+
+Si querés forzar que se ejecute de nuevo el init.sql (por ejemplo, para reiniciar la base), usá:
+
+```bash
+docker-compose down -v
+./build-all.sh
+docker-compose up --build
+```
+
+Esto borra los volúmenes (incluida la base de datos) y vuelve a levantar todo desde cero.
 
 ### Acceso a los servicios
 
