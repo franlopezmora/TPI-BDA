@@ -1,10 +1,10 @@
-package com.tpi.agencia.tpibda;
+package com.tpi.admin;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TpiBdaApplicationTests {
+class TpiAdminServiceApplicationTests {
 
     @Test
     void contextLoads() {
