@@ -1,5 +1,6 @@
 package com.tpi.admin.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class Empleado {
     private String telefonoContacto;
 
     @OneToMany(mappedBy = "empleado")
+    @JsonIgnore
     private List<Prueba> pruebas;
 
     public Empleado() {

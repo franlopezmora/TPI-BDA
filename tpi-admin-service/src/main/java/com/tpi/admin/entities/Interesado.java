@@ -1,6 +1,7 @@
 package com.tpi.admin.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tpi.admin.utils.BooleanIntegerConverter;
 import jakarta.persistence.*;
 
@@ -40,6 +41,7 @@ public class Interesado {
     private LocalDate fechaVencimientoLicencia;
 
     @OneToMany(mappedBy = "interesado")
+    @JsonIgnore
     private List<Prueba> pruebas;
 
     public Interesado() {

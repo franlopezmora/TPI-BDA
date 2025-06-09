@@ -1,6 +1,8 @@
 package com.tpi.admin.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "Pruebas")
 public class Prueba {
 
@@ -47,6 +50,7 @@ public class Prueba {
     private Vehiculo vehiculo;
 
     @OneToMany(mappedBy = "prueba")
+    @JsonIgnore
     private List<Notificacion> notificaciones = new ArrayList<>();
 
     public Prueba() {
