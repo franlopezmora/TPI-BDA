@@ -17,7 +17,10 @@
 Thumbs.db
 
 # Docker y base de datos
-docker/
+docker/*
+docker/db/*.tmp
+!docker/db/
+!docker/db/init.sql
 .env
 **/*.db  # Ignora archivos binarios como .sqlite o .mv.db, pero no los SQL
 
