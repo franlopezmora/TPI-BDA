@@ -30,8 +30,6 @@ public class ModeloService {
     }
 
     public Modelo crear(Modelo modelo) {
-        System.out.println("Marca recibida: " + modelo.getMarca());
-
         if (modelo.getMarca() != null && modelo.getMarca().getId() != null) {
             Marca marca = marcaRepository.findById(modelo.getMarca().getId().longValue())
                     .orElseThrow(() -> new IllegalArgumentException("Marca no encontrada con ID: " + modelo.getMarca().getId()));
