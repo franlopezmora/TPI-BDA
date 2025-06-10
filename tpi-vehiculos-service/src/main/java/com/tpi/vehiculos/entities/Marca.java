@@ -1,7 +1,9 @@
 package com.tpi.vehiculos.entities;
 
 import jakarta.persistence.*;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +13,14 @@ public class Marca {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "NOMBRE", nullable = false)
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @OneToMany(mappedBy = "marca")
+    @OneToMany(mappedBy = "marca", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Modelo> modelos = new ArrayList<>();
 
     public Marca () {

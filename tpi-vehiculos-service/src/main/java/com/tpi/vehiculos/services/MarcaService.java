@@ -2,10 +2,10 @@ package com.tpi.vehiculos.services;
 
 import com.tpi.vehiculos.entities.Marca;
 import com.tpi.vehiculos.repositories.MarcaRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MarcaService {
@@ -16,26 +16,40 @@ public class MarcaService {
         this.marcaRepository = marcaRepository;
     }
 
-    public List<Marca> getAllMarcas() {
+    public List<Marca> listar() {
         return marcaRepository.findAll();
     }
 
-    public Marca getMarcaById(Long id) {
+    public Optional<Marca> obtenerPorId(Long id) {
+        return marcaRepository.findById(id);
+    }
+
+    public Marca crear(Marca marca) {
+        return marcaRepository.save(marca);
+    }
+
+    public Optional<Marca> actualizar(Long id, Marca marca) {
         return marcaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Marca no encontrada con ID: " + id));
+                .map(m -> {
+                    m.setNombre(marca.getNombre());
+                    return marcaRepository.save(m);
+                });
     }
 
-    public Marca createMarca(Marca marca) {
-        return marcaRepository.save(marca);
+    public boolean eliminar(Long id) {
+        if (marcaRepository.existsById(id)) {
+            marcaRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
-    public Marca updateMarca(Long id, Marca marcaDetails) {
-        Marca marca = getMarcaById(id);
-        marca.setNombre(marcaDetails.getNombre());
-        return marcaRepository.save(marca);
+    public List<Marca> buscarPorNombre(String nombre) {
+        return marcaRepository.findByNombre(nombre);
     }
 
-    public void deleteMarca(Long id) {
-        marcaRepository.deleteById(id);
+    public List<Marca> buscarPorNombreParcial(String nombre) {
+        return marcaRepository.findByNombreContainingIgnoreCase(nombre);
     }
+
 }

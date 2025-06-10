@@ -16,7 +16,7 @@ public class VehiculoService {
         this.vehiculoRepository = vehiculoRepository;
     }
 
-    public List<Vehiculo> obtenerTodos() {
+    public List<Vehiculo> listar() {
         return vehiculoRepository.findAll();
     }
 
@@ -24,22 +24,38 @@ public class VehiculoService {
         return vehiculoRepository.findById(id);
     }
 
-    public Vehiculo crearVehiculo(Vehiculo vehiculo) {
+    public Vehiculo crear(Vehiculo vehiculo) {
         return vehiculoRepository.save(vehiculo);
     }
 
-    public Vehiculo actualizarVehiculo(Long id, Vehiculo vehiculoActualizado) {
+    public Optional<Vehiculo> actualizar(Long id, Vehiculo vehiculo) {
         return vehiculoRepository.findById(id)
                 .map(v -> {
-                    v.setPatente(vehiculoActualizado.getPatente());
-                    v.setModelo(vehiculoActualizado.getModelo());
-                    v.setAnio(vehiculoActualizado.getAnio());
+                    v.setPatente(vehiculo.getPatente());
+                    v.setAnio(vehiculo.getAnio());
+                    v.setModelo(vehiculo.getModelo());
                     return vehiculoRepository.save(v);
-                })
-                .orElseThrow(() -> new RuntimeException("Vehículo no encontrado con ID: " + id));
+                });
     }
 
-    public void eliminarVehiculo(Long id) {
-        vehiculoRepository.deleteById(id);
+    public boolean eliminar(Long id) {
+        if (vehiculoRepository.existsById(id)) {
+            vehiculoRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
+
+    public Optional<Vehiculo> buscarPorPatente(String patente) {
+        return vehiculoRepository.findByPatente(patente);
+    }
+
+    public List<Vehiculo> buscarPorAnio(Integer anio) {
+        return vehiculoRepository.findByAnio(anio);
+    }
+
+    public List<Vehiculo> buscarPorModeloId(Long idModelo) {
+        return vehiculoRepository.findByModeloId(idModelo);
+    }
+
 }

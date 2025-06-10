@@ -18,25 +18,25 @@ public class MarcaController {
     }
 
     @GetMapping
-    public List<Marca> listar() {
-        return marcaService.getAllMarcas();
+    public ResponseEntity<List<Marca>> listar() {
+        return ResponseEntity.ok(marcaService.listar());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Marca> obtenerPorId(@PathVariable Long id) {
-        return marcaService.getMarcaById(id)
+        return marcaService.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Marca crear(@RequestBody Marca marca) {
-        return marcaService.createMarca(marca);
+    public ResponseEntity<Marca> crear(@RequestBody Marca marca) {
+        return ResponseEntity.ok(marcaService.crear(marca));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Marca> actualizar(@PathVariable Long id, @RequestBody Marca marca) {
-        return marcaService.updateMarca(id, marca)
+        return marcaService.actualizar(id, marca)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -47,5 +47,15 @@ public class MarcaController {
                 ? ResponseEntity.noContent().build()
                 : ResponseEntity.notFound().build();
     }
-}
 
+    @GetMapping("/buscar")
+    public List<Marca> buscarPorNombre(@RequestParam String nombre) {
+        return marcaService.buscarPorNombre(nombre);
+    }
+
+    @GetMapping("/buscar-parcial")
+    public List<Marca> buscarPorNombreParcial(@RequestParam String nombre) {
+        return marcaService.buscarPorNombreParcial(nombre);
+    }
+
+}

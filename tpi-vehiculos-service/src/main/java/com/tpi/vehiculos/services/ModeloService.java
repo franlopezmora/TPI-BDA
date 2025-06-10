@@ -1,42 +1,74 @@
 package com.tpi.vehiculos.services;
 
+import com.tpi.vehiculos.entities.Marca;
 import com.tpi.vehiculos.entities.Modelo;
 import com.tpi.vehiculos.repositories.ModeloRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import com.tpi.vehiculos.repositories.MarcaRepository;
+
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ModeloService {
 
+    private final MarcaRepository marcaRepository;
     private final ModeloRepository modeloRepository;
 
-    public ModeloService(ModeloRepository modeloRepository) {
+    public ModeloService(ModeloRepository modeloRepository, MarcaRepository marcaRepository) {
         this.modeloRepository = modeloRepository;
+        this.marcaRepository = marcaRepository;
     }
 
-    public List<Modelo> getAllModelos() {
+    public List<Modelo> listar() {
         return modeloRepository.findAll();
     }
 
-    public Modelo getModeloById(Long id) {
+    public Optional<Modelo> obtenerPorId(Long id) {
+        return modeloRepository.findById(id);
+    }
+
+    public Modelo crear(Modelo modelo) {
+        System.out.println("Marca recibida: " + modelo.getMarca());
+
+        if (modelo.getMarca() != null && modelo.getMarca().getId() != null) {
+            Marca marca = marcaRepository.findById(modelo.getMarca().getId().longValue())
+                    .orElseThrow(() -> new IllegalArgumentException("Marca no encontrada con ID: " + modelo.getMarca().getId()));
+            modelo.setMarca(marca);
+        } else {
+            throw new IllegalArgumentException("La marca es requerida");
+        }
+        return modeloRepository.save(modelo);
+    }
+
+    public Optional<Modelo> actualizar(Long id, Modelo modelo) {
         return modeloRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Modelo no encontrado con ID: " + id));
+                .map(m -> {
+                    m.setDescripcion(modelo.getDescripcion());
+                    m.setMarca(modelo.getMarca());
+                    return modeloRepository.save(m);
+                });
     }
 
-    public Modelo createModelo(Modelo modelo) {
-        return modeloRepository.save(modelo);
+    public boolean eliminar(Long id) {
+        if (modeloRepository.existsById(id)) {
+            modeloRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
-    public Modelo updateModelo(Long id, Modelo modeloDetails) {
-        Modelo modelo = getModeloById(id);
-        modelo.setDescripcion(modeloDetails.getDescripcion());
-        modelo.setMarca(modeloDetails.getMarca());
-        return modeloRepository.save(modelo);
+    public List<Modelo> buscarPorDescripcion(String descripcion) {
+        return modeloRepository.findByDescripcionContainingIgnoreCase(descripcion);
     }
 
-    public void deleteModelo(Long id) {
-        modeloRepository.deleteById(id);
+    public List<Modelo> buscarPorMarcaId(Long idMarca) {
+        return modeloRepository.findByMarcaId(idMarca);
     }
+
+    public List<Modelo> buscarPorDescripcionParcial(String descripcion) {
+        return modeloRepository.buscarPorDescripcionParcial(descripcion);
+    }
+
 }

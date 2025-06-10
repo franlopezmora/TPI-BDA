@@ -2,10 +2,10 @@ package com.tpi.vehiculos.services;
 
 import com.tpi.vehiculos.entities.ZonaPeligrosa;
 import com.tpi.vehiculos.repositories.ZonaPeligrosaRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ZonaPeligrosaService {
@@ -16,30 +16,48 @@ public class ZonaPeligrosaService {
         this.zonaPeligrosaRepository = zonaPeligrosaRepository;
     }
 
-    public List<ZonaPeligrosa> getAllZonas() {
+    public List<ZonaPeligrosa> listar() {
         return zonaPeligrosaRepository.findAll();
     }
 
-    public ZonaPeligrosa getZonaById(Long id) {
+    public Optional<ZonaPeligrosa> obtenerPorId(Long id) {
+        return zonaPeligrosaRepository.findById(id);
+    }
+
+    public ZonaPeligrosa crear(ZonaPeligrosa zona) {
+        return zonaPeligrosaRepository.save(zona);
+    }
+
+    public Optional<ZonaPeligrosa> actualizar(Long id, ZonaPeligrosa zona) {
         return zonaPeligrosaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Zona peligrosa no encontrada con ID: " + id));
+                .map(z -> {
+                    z.setNombre(zona.getNombre());
+                    z.setLatNoroeste(zona.getLatNoroeste());
+                    z.setLonNoroeste(zona.getLonNoroeste());
+                    z.setLatSureste(zona.getLatSureste());
+                    z.setLonSureste(zona.getLonSureste());
+                    return zonaPeligrosaRepository.save(z);
+                });
     }
 
-    public ZonaPeligrosa createZona(ZonaPeligrosa zona) {
-        return zonaPeligrosaRepository.save(zona);
+    public boolean eliminar(Long id) {
+        if (zonaPeligrosaRepository.existsById(id)) {
+            zonaPeligrosaRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
-    public ZonaPeligrosa updateZona(Long id, ZonaPeligrosa zonaDetails) {
-        ZonaPeligrosa zona = getZonaById(id);
-        zona.setNombre(zonaDetails.getNombre());
-        zona.setLatNoroeste(zonaDetails.getLatNoroeste());
-        zona.setLonNoroeste(zonaDetails.getLonNoroeste());
-        zona.setLatSureste(zonaDetails.getLatSureste());
-        zona.setLonSureste(zonaDetails.getLonSureste());
-        return zonaPeligrosaRepository.save(zona);
+    public List<ZonaPeligrosa> buscarPorNombreExacto(String nombre) {
+        return zonaPeligrosaRepository.findByNombre(nombre);
     }
 
-    public void deleteZona(Long id) {
-        zonaPeligrosaRepository.deleteById(id);
+    public List<ZonaPeligrosa> buscarPorNombreParcial(String nombre) {
+        return zonaPeligrosaRepository.buscarPorNombreParcial(nombre);
     }
+
+    public List<ZonaPeligrosa> buscarZonasQueContienen(double lat, double lon) {
+        return zonaPeligrosaRepository.buscarZonasQueContienen(lat, lon);
+    }
+
 }

@@ -3,7 +3,8 @@ package com.tpi.vehiculos.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,21 +14,22 @@ public class Vehiculo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "PATENTE", nullable = false)
+    @Column(name = "patente", nullable = false)
     private String patente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "ID_MODELO",
+            name = "id_modelo",
             nullable = false,
             foreignKey = @jakarta.persistence.ForeignKey(name = "Vehiculos_Modelos_FK")
     )
+    @JsonManagedReference
     private Modelo modelo;
 
-    @Column(name = "ANIO", nullable = false)
+    @Column(name = "anio", nullable = false)
     private Integer anio ;  // valor por defecto en la BD
 
     @OneToMany(mappedBy = "vehiculo")
