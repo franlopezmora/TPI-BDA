@@ -2,6 +2,7 @@ package com.tpi.vehiculos.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -24,9 +25,9 @@ public class Vehiculo {
     @JoinColumn(
             name = "id_modelo",
             nullable = false,
-            foreignKey = @jakarta.persistence.ForeignKey(name = "Vehiculos_Modelos_FK")
+            foreignKey = @ForeignKey(name = "Vehiculos_Modelos_FK")
     )
-    @JsonManagedReference
+    @JsonIgnoreProperties({"vehiculos", "hibernateLazyInitializer", "handler"})
     private Modelo modelo;
 
     @Column(name = "anio", nullable = false)

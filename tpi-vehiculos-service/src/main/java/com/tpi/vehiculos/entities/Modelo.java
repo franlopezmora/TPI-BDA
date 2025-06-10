@@ -3,6 +3,7 @@ package com.tpi.vehiculos.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -27,13 +28,13 @@ public class Modelo {
             nullable = false,
             foreignKey = @ForeignKey(name = "Modelos_Marcas_FK")
     )
-    @JsonBackReference
+    @JsonIgnoreProperties({"modelos", "hibernateLazyInitializer", "handler"})
     private Marca marca;
 
 
 
     @OneToMany(mappedBy = "modelo", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
+    @JsonIgnore
     private List<Vehiculo> vehiculos = new ArrayList<>();
 
     public Modelo () {}

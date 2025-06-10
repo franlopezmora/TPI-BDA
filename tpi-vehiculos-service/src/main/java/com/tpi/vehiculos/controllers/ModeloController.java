@@ -54,14 +54,9 @@ public class ModeloController {
         return modeloService.buscarPorDescripcion(descripcion);
     }
 
-    @GetMapping("/buscar-por-marca")
-    public List<Modelo> buscarPorMarca(@RequestParam Long idMarca) {
+    @GetMapping("/por-marca/{idMarca}")
+    public List<Modelo> buscarPorMarca(@PathVariable Long idMarca) {
         return modeloService.buscarPorMarcaId(idMarca);
-    }
-
-    @GetMapping("/buscar-descripcion")
-    public List<Modelo> buscarPorDescripcionParcial(@RequestParam String descripcion) {
-        return modeloService.buscarPorDescripcionParcial(descripcion);
     }
 
 }

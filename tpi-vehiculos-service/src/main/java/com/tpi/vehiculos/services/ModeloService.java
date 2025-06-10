@@ -67,8 +67,5 @@ public class ModeloService {
         return modeloRepository.findByMarcaId(idMarca);
     }
 
-    public List<Modelo> buscarPorDescripcionParcial(String descripcion) {
-        return modeloRepository.buscarPorDescripcionParcial(descripcion);
-    }
 
 }

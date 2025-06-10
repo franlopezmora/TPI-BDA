@@ -20,7 +20,7 @@ public class Marca {
     private String nombre;
 
     @OneToMany(mappedBy = "marca", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonIgnore
     private List<Modelo> modelos = new ArrayList<>();
 
     public Marca () {

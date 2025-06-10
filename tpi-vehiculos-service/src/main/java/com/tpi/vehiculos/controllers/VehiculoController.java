@@ -1,7 +1,9 @@
 package com.tpi.vehiculos.controllers;
 
+import com.tpi.vehiculos.entities.Marca;
 import com.tpi.vehiculos.entities.Vehiculo;
 import com.tpi.vehiculos.services.VehiculoService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +21,8 @@ public class VehiculoController {
     }
 
     @GetMapping
-    public List<Vehiculo> listar() {
-        return vehiculoService.listar();
+    public ResponseEntity<List<Vehiculo>> listar() {
+        return ResponseEntity.ok(vehiculoService.listar());
     }
 
     @GetMapping("/{id}")
@@ -62,8 +64,8 @@ public class VehiculoController {
         return vehiculoService.buscarPorAnio(anio);
     }
 
-    @GetMapping("/buscar-por-modelo")
-    public List<Vehiculo> buscarPorModelo(@RequestParam Long idModelo) {
+    @GetMapping("/por-modelo/{idModelo}")
+    public List<Vehiculo> buscarPorModelo(@PathVariable Long idModelo) {
         return vehiculoService.buscarPorModeloId(idModelo);
     }
 

@@ -13,8 +13,4 @@ public interface ModeloRepository extends JpaRepository<Modelo, Long> {
     List<Modelo> findByDescripcionContainingIgnoreCase(String descripcion);
 
     List<Modelo> findByMarcaId(Long idMarca);
-
-    @Query("SELECT m FROM Modelo m WHERE LOWER(m.descripcion) LIKE LOWER(CONCAT('%', :desc, '%'))")
-    List<Modelo> buscarPorDescripcionParcial(@Param("desc") String descripcion);
-
 }
