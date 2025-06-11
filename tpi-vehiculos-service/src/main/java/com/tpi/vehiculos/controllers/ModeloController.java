@@ -1,5 +1,6 @@
 package com.tpi.vehiculos.controllers;
 
+import com.tpi.vehiculos.dtos.ModeloDTO;
 import com.tpi.vehiculos.entities.Modelo;
 import com.tpi.vehiculos.services.ModeloService;
 import org.springframework.http.ResponseEntity;
@@ -18,45 +19,50 @@ public class ModeloController {
     }
 
     @GetMapping
-    public List<Modelo> listar() {
-        return modeloService.listar();
+    public List<ModeloDTO> listar() {
+        return modeloService.listarDTO();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Modelo> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<ModeloDTO> obtenerPorId(@PathVariable Long id) {
         return modeloService.obtenerPorId(id)
+                .map(modeloService::toDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Modelo crear(@RequestBody Modelo modelo) {
-        return modeloService.crear(modelo);
+    public ResponseEntity<ModeloDTO> crear(@RequestBody ModeloDTO modeloDTO) {
+        Modelo creado = modeloService.crear(modeloService.fromDTO(modeloDTO));
+        return ResponseEntity.ok(modeloService.toDTO(creado));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Modelo> actualizar(@PathVariable Long id, @RequestBody Modelo modelo) {
-        return modeloService.actualizar(id, modelo)
+    public ResponseEntity<ModeloDTO> actualizar(@PathVariable Long id, @RequestBody ModeloDTO modeloDTO) {
+        return modeloService.actualizar(id, modeloService.fromDTO(modeloDTO))
+                .map(modeloService::toDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (modeloService.eliminar(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        return modeloService.eliminar(id)
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/buscar-por-descripcion")
-    public List<Modelo> buscarPorDescripcion(@RequestParam String descripcion) {
-        return modeloService.buscarPorDescripcion(descripcion);
+    public List<ModeloDTO> buscarPorDescripcion(@RequestParam String descripcion) {
+        return modeloService.buscarPorDescripcion(descripcion).stream()
+                .map(modeloService::toDTO)
+                .toList();
     }
 
     @GetMapping("/por-marca/{idMarca}")
-    public List<Modelo> buscarPorMarca(@PathVariable Long idMarca) {
-        return modeloService.buscarPorMarcaId(idMarca);
+    public List<ModeloDTO> buscarPorMarca(@PathVariable Long idMarca) {
+        return modeloService.buscarPorMarcaId(idMarca).stream()
+                .map(modeloService::toDTO)
+                .toList();
     }
-
 }
