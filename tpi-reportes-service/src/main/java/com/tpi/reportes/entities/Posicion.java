@@ -93,4 +93,10 @@ public class Posicion {
     public void setLongitud(Double longitud) {
         this.longitud = longitud;
     }
+
+    public double distanceTo(Posicion o) {
+        double dx = this.latitud  - o.latitud;
+        double dy = this.longitud - o.longitud;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
 }
