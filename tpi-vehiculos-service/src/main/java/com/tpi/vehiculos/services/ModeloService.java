@@ -1,8 +1,10 @@
 package com.tpi.vehiculos.services;
 
+import com.tpi.vehiculos.dtos.ModeloDTO;
 import com.tpi.vehiculos.entities.Marca;
 import com.tpi.vehiculos.entities.Modelo;
 import com.tpi.vehiculos.repositories.ModeloRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.tpi.vehiculos.repositories.MarcaRepository;
 
@@ -12,8 +14,6 @@ import java.util.Optional;
 
 @Service
 public class ModeloService {
-
-    private final MarcaRepository marcaRepository;
     private final ModeloRepository modeloRepository;
 
     public ModeloService(ModeloRepository modeloRepository, MarcaRepository marcaRepository) {
@@ -65,5 +65,32 @@ public class ModeloService {
         return modeloRepository.findByMarcaId(idMarca);
     }
 
+
+    private final MarcaRepository marcaRepository;
+
+    public List<ModeloDTO> listarDTO() {
+        return modeloRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    public ModeloDTO toDTO(Modelo modelo) {
+        return new ModeloDTO(
+                modelo.getId().longValue(),
+                modelo.getDescripcion(),
+                modelo.getMarca() != null ? modelo.getMarca().getId().longValue() : null
+        );
+    }
+
+    public Modelo fromDTO(ModeloDTO dto) {
+        Marca marca = marcaRepository.findById(dto.getIdMarca())
+                .orElseThrow(() -> new IllegalArgumentException("Marca no encontrada con ID: " + dto.getIdMarca()));
+
+        Modelo modelo = new Modelo();
+        modelo.setId(dto.getId() != null ? dto.getId().intValue() : null);
+        modelo.setDescripcion(dto.getDescripcion());
+        modelo.setMarca(marca);
+        return modelo;
+    }
 
 }
