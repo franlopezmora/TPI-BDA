@@ -8,22 +8,22 @@ import jakarta.persistence.*;
 public class ZonaPeligrosa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "id")
     private Integer id;
 
-    @Column(name = "NOMBRE", nullable = false)
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(name = "LAT_NOROESTE", nullable = false)
+    @Column(name = "lat_noroeste", nullable = false)
     private Double latNoroeste;
 
-    @Column(name = "LON_NOROESTE", nullable = false)
+    @Column(name = "lon_noroeste", nullable = false)
     private Double lonNoroeste;
 
-    @Column(name = "LAT_SURESTE", nullable = false)
+    @Column(name = "lat_sureste", nullable = false)
     private Double latSureste;
 
-    @Column(name = "LON_SURESTE", nullable = false)
+    @Column(name = "lon_sureste", nullable = false)
     private Double lonSureste;
 
     public ZonaPeligrosa () {

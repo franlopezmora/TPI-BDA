@@ -10,24 +10,24 @@ public class Posicion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "ID_VEHICULO",
+            name = "id_vehiculo",
             nullable = false,
             foreignKey = @ForeignKey(name = "Posiciones_Vehiculos_FK")
     )
     private Vehiculo vehiculo;
 
-    @Column(name = "FECHA_HORA", nullable = false)
+    @Column(name = "fecha_hora", nullable = false)
     private LocalDateTime fechaHora;
 
-    @Column(name = "LATITUD",nullable = false)
+    @Column(name = "latitud",nullable = false)
     private Double latitud;
 
-    @Column(name = "LONGITUD",nullable = false)
+    @Column(name = "longitud",nullable = false)
     private Double longitud;
 
     // Getters y setters
