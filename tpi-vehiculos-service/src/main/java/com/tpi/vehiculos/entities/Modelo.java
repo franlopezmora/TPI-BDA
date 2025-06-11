@@ -31,8 +31,6 @@ public class Modelo {
     @JsonIgnoreProperties({"modelos", "hibernateLazyInitializer", "handler"})
     private Marca marca;
 
-
-
     @OneToMany(mappedBy = "modelo", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Vehiculo> vehiculos = new ArrayList<>();

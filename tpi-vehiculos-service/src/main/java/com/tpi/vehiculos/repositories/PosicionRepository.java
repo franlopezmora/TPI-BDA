@@ -15,6 +15,5 @@ public interface PosicionRepository extends JpaRepository<Posicion, Long> {
 
     @Query("SELECT p FROM Posicion p WHERE p.fechaHora BETWEEN :inicio AND :fin")
     List<Posicion> findByFechaHoraBetween(@Param("inicio") LocalDateTime inicio, @Param("fin") LocalDateTime fin);
-
 }
 
