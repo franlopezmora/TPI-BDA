@@ -21,4 +21,9 @@ cd "tpi-gateway-service"
 ./mvnw clean package -DskipTests
 cd ..
 
+echo "📦 Building tpi-notificaciones-service..."
+cd "tpi-notificaciones-service"
+./mvnw clean package -DskipTests
+cd ..
+
 echo "✅ All builds completed."
