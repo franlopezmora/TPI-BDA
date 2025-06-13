@@ -1,4 +1,4 @@
-package com.tpi.admin.utils;
+package com.tpi.reportes.utils;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
