@@ -1,5 +1,8 @@
 package com.tpi.reportes.services;
 
+import com.tpi.reportes.dtos.IncidenteDTO;
+import com.tpi.reportes.dtos.IncidenteEmpleadoDTO;
+import com.tpi.reportes.dtos.IncidenteVehiculoDTO;
 import com.tpi.reportes.dtos.PruebaDTO;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,4 +21,7 @@ public interface ReporteService {
      * (iv) Detalle de todas las pruebas realizadas para un vehículo.
      */
     List<PruebaDTO> obtenerPruebasPorVehiculo(Integer vehiculoId);
+    List<IncidenteDTO> obtenerTodosLosIncidentes();
+    List<IncidenteVehiculoDTO> obtenerIncidentesPorVehiculo(Long idVehiculo);
+    List<IncidenteEmpleadoDTO> obtenerIncidentesPorEmpleado(Long legajo);
 }
