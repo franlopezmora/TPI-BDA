@@ -82,7 +82,7 @@ public class ReportesService {
     }
 
     //public KilometrosVehiculoDTO obtenerKilometrosPorVehiculoEnPeriodo(Long idVehiculo, LocalDateTime desde, LocalDateTime hasta) {
-        // ⚠️ TODO: Esto debe implementarse una vez tengas acceso a las posiciones. => marianelson
+        // cuando haya acceso a las posiciones. => marianelson
        // return new KilometrosVehiculoDTO(idVehiculo, 0.0); // Placeholder
   //  }
 }
