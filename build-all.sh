@@ -1,21 +1,24 @@
 #!/bin/bash
-
-ROOT_DIR=$(pwd)
+set -e
 
 echo "📦 Building tpi-admin-service..."
-cd "$ROOT_DIR/tpi-admin-service"
-mvn clean package -DskipTests
+cd "tpi-admin-service"
+./mvnw clean package -DskipTests
+cd ..
 
 echo "📦 Building tpi-vehiculos-service..."
-cd "$ROOT_DIR/tpi-vehiculos-service"
-mvn clean package -DskipTests
+cd "tpi-vehiculos-service"
+./mvnw clean package -DskipTests
+cd ..
 
 echo "📦 Building tpi-reportes-service..."
-cd "$ROOT_DIR/tpi-reportes-service"
-mvn clean package -DskipTests
+cd "tpi-reportes-service"
+./mvnw clean package -DskipTests
+cd ..
 
 echo "📦 Building tpi-gateway-service..."
-cd "$ROOT_DIR/tpi-gateway-service"
-mvn clean package -DskipTests
+cd "tpi-gateway-service"
+./mvnw clean package -DskipTests
+cd ..
 
 echo "✅ All builds completed."

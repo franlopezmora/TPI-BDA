@@ -1,5 +1,6 @@
 package com.tpi.vehiculos.controllers;
 
+import com.tpi.vehiculos.dtos.PosicionDTO;
 import com.tpi.vehiculos.entities.Posicion;
 import com.tpi.vehiculos.services.PosicionService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/posiciones")
@@ -20,25 +22,30 @@ public class PosicionController {
     }
 
     @GetMapping
-    public List<Posicion> listar() {
-        return posicionService.listar();
+    public List<PosicionDTO> listar() {
+        return posicionService.listarDTO();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Posicion> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<PosicionDTO> obtenerPorId(@PathVariable Long id) {
         return posicionService.obtenerPorId(id)
+                .map(posicionService::toDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Posicion crear(@RequestBody Posicion posicion) {
-        return posicionService.crear(posicion);
+    public ResponseEntity<PosicionDTO> crear(@RequestBody PosicionDTO dto) {
+        Posicion posicion = posicionService.fromDTO(dto, dto.getIdVehiculo());
+        Posicion guardada = posicionService.crear(posicion);
+        return ResponseEntity.ok(posicionService.toDTO(guardada));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Posicion> actualizar(@PathVariable Long id, @RequestBody Posicion posicion) {
+    public ResponseEntity<PosicionDTO> actualizar(@PathVariable Long id, @RequestBody PosicionDTO dto) {
+        Posicion posicion = posicionService.fromDTO(dto, dto.getIdVehiculo());
         return posicionService.actualizar(id, posicion)
+                .map(posicionService::toDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -52,16 +59,22 @@ public class PosicionController {
     }
 
     @GetMapping("/buscar-por-vehiculo")
-    public List<Posicion> buscarPorVehiculo(@RequestParam Long idVehiculo) {
-        return posicionService.buscarPorVehiculo(idVehiculo);
+    public List<PosicionDTO> buscarPorVehiculo(@RequestParam Long idVehiculo) {
+        return posicionService.buscarPorVehiculo(idVehiculo)
+                .stream()
+                .map(posicionService::toDTO)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/buscar-por-rango-fechas")
-    public List<Posicion> buscarPorRangoFechas(
+    public List<PosicionDTO> buscarPorRangoFechas(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fin
     ) {
-        return posicionService.buscarPorRangoFechas(inicio, fin);
+        return posicionService.buscarPorRangoFechas(inicio, fin)
+                .stream()
+                .map(posicionService::toDTO)
+                .collect(Collectors.toList());
     }
 
 }

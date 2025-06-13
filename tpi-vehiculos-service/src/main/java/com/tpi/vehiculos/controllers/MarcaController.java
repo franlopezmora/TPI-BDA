@@ -1,5 +1,6 @@
 package com.tpi.vehiculos.controllers;
 
+import com.tpi.vehiculos.dtos.MarcaDTO;
 import com.tpi.vehiculos.entities.Marca;
 import com.tpi.vehiculos.services.MarcaService;
 import org.springframework.http.ResponseEntity;
@@ -18,25 +19,28 @@ public class MarcaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Marca>> listar() {
-        return ResponseEntity.ok(marcaService.listar());
+    public ResponseEntity<List<MarcaDTO>> listar() {
+        return ResponseEntity.ok(marcaService.listarDTO());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Marca> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<MarcaDTO> obtenerPorId(@PathVariable Long id) {
         return marcaService.obtenerPorId(id)
+                .map(marcaService::toDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Marca> crear(@RequestBody Marca marca) {
-        return ResponseEntity.ok(marcaService.crear(marca));
+    public ResponseEntity<MarcaDTO> crear(@RequestBody MarcaDTO dto) {
+        Marca nueva = marcaService.crear(marcaService.fromDTO(dto));
+        return ResponseEntity.ok(marcaService.toDTO(nueva));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Marca> actualizar(@PathVariable Long id, @RequestBody Marca marca) {
-        return marcaService.actualizar(id, marca)
+    public ResponseEntity<MarcaDTO> actualizar(@PathVariable Long id, @RequestBody MarcaDTO dto) {
+        return marcaService.actualizar(id, marcaService.fromDTO(dto))
+                .map(marcaService::toDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -49,13 +53,13 @@ public class MarcaController {
     }
 
     @GetMapping("/buscar")
-    public List<Marca> buscarPorNombre(@RequestParam String nombre) {
-        return marcaService.buscarPorNombre(nombre);
+    public List<MarcaDTO> buscarPorNombre(@RequestParam String nombre) {
+        return marcaService.buscarPorNombre(nombre).stream().map(marcaService::toDTO).toList();
     }
 
     @GetMapping("/buscar-parcial")
-    public List<Marca> buscarPorNombreParcial(@RequestParam String nombre) {
-        return marcaService.buscarPorNombreParcial(nombre);
+    public List<MarcaDTO> buscarPorNombreParcial(@RequestParam String nombre) {
+        return marcaService.buscarPorNombreParcial(nombre).stream().map(marcaService::toDTO).toList();
     }
 
 }

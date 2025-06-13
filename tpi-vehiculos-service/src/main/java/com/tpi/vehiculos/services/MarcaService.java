@@ -1,5 +1,6 @@
 package com.tpi.vehiculos.services;
 
+import com.tpi.vehiculos.dtos.MarcaDTO;
 import com.tpi.vehiculos.entities.Marca;
 import com.tpi.vehiculos.repositories.MarcaRepository;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,26 @@ public class MarcaService {
 
     public List<Marca> buscarPorNombreParcial(String nombre) {
         return marcaRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
+    public List<MarcaDTO> listarDTO() {
+        return marcaRepository.findAll().stream().map(this::toDTO).toList();
+    }
+
+    public MarcaDTO toDTO(Marca marca) {
+        return new MarcaDTO(
+                marca.getId().longValue(),
+                marca.getNombre()
+        );
+    }
+
+    public Marca fromDTO(MarcaDTO dto) {
+        Marca marca = new Marca();
+        if (dto.getId() != null) {
+            marca.setId(dto.getId().intValue());
+        }
+        marca.setNombre(dto.getNombre());
+        return marca;
     }
 
 }
