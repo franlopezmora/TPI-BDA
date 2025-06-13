@@ -51,4 +51,7 @@ public class ReporteController {
     public List <IncidenteEmpleadoDTO> getIncidentesPorEmpleado(@PathVariable Long legajo){
         return svc.obtenerIncidentesPorEmpleado(legajo);
     }
+
+
+
 }

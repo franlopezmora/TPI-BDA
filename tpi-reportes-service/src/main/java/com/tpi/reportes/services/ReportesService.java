@@ -7,6 +7,9 @@ import com.tpi.reportes.repositories.TipoIncidenteRepository;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -81,8 +84,7 @@ public class ReportesService {
                 .collect(Collectors.toList());
     }
 
-    //public KilometrosVehiculoDTO obtenerKilometrosPorVehiculoEnPeriodo(Long idVehiculo, LocalDateTime desde, LocalDateTime hasta) {
-        // cuando haya acceso a las posiciones. => marianelson
-       // return new KilometrosVehiculoDTO(idVehiculo, 0.0); // Placeholder
-  //  }
+
+
+
 }

@@ -20,4 +20,10 @@ public interface ReporteService {
     List<IncidenteDTO> obtenerTodosLosIncidentes();
     List<IncidenteVehiculoDTO> obtenerIncidentesPorVehiculo(Long idVehiculo);
     List<IncidenteEmpleadoDTO> obtenerIncidentesPorEmpleado(Long legajo);
+
+    KilometrosVehiculosDTO obtenerKilometrosPorVehiculoEnPeriodo (
+            Integer vehiculoId,
+            LocalDateTime desde,
+            LocalDateTime hasta
+    );
 }
