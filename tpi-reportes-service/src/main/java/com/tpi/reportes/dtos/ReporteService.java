@@ -1,9 +1,5 @@
-package com.tpi.reportes.services;
+package com.tpi.reportes.dtos;
 
-import com.tpi.reportes.dtos.IncidenteDTO;
-import com.tpi.reportes.dtos.IncidenteEmpleadoDTO;
-import com.tpi.reportes.dtos.IncidenteVehiculoDTO;
-import com.tpi.reportes.dtos.PruebaDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 

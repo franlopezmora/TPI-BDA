@@ -2,14 +2,12 @@ package com.tpi.reportes.services;
 
 import com.tpi.reportes.clients.PruebaClient;
 import com.tpi.reportes.dtos.*;
-import com.tpi.reportes.entities.Incidente;
 import com.tpi.reportes.repositories.IncidenteRepository;
 import com.tpi.reportes.repositories.TipoIncidenteRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;

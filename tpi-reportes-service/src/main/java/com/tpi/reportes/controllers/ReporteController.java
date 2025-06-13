@@ -6,7 +6,7 @@ import com.tpi.reportes.dtos.IncidenteEmpleadoDTO;
 import com.tpi.reportes.dtos.IncidenteVehiculoDTO;
 import com.tpi.reportes.dtos.PruebaDTO;
 
-import com.tpi.reportes.services.ReporteService;
+import com.tpi.reportes.dtos.ReporteService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 

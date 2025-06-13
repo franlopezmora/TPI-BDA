@@ -6,7 +6,7 @@ import com.tpi.reportes.repositories.IncidenteRepository;
 import com.tpi.reportes.repositories.TipoIncidenteRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
