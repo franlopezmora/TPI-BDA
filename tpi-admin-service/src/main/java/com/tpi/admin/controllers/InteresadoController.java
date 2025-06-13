@@ -3,6 +3,7 @@ package com.tpi.admin.controllers;
 import com.tpi.admin.entities.Interesado;
 import com.tpi.admin.services.InteresadoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

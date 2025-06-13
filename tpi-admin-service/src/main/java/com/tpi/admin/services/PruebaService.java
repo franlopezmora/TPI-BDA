@@ -30,11 +30,13 @@ public class PruebaService {
         Prueba existente = pruebaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Prueba no encontrada con ID: " + id));
 
-        // Suponiendo algunos campos (ajustá según tu entidad real)
-        existente.setFecha(actualizada.getFecha());
-        existente.setResultado(actualizada.getResultado());
+        // Actualizamos los campos válidos según tu entidad
+        existente.setFechaHoraInicio(actualizada.getFechaHoraInicio());
+        existente.setFechaHoraFin(actualizada.getFechaHoraFin());
+        existente.setComentario(actualizada.getComentario());
         existente.setEmpleado(actualizada.getEmpleado());
         existente.setInteresado(actualizada.getInteresado());
+        existente.setVehiculo(actualizada.getVehiculo());
 
         return pruebaRepository.save(existente);
     }

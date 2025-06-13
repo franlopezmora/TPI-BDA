@@ -2,9 +2,11 @@ package com.tpi.admin.services;
 
 import com.tpi.admin.entities.Interesado;
 import com.tpi.admin.repositories.InteresadoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InteresadoService {
