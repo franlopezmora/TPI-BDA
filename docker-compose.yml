@@ -46,6 +46,14 @@ services:
     ports:
       - "8084:8084"
 
+  pruebas-service:
+    build: ./tpi-pruebas-service
+    container_name: tpi-pruebas-service
+    depends_on:
+      - postgres
+    ports:
+      - "8085:8085"
+
   gateway:
     build: ./tpi-gateway-service
     container_name: tpi-gateway

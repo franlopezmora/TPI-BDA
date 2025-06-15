@@ -1,4 +1,8 @@
 package com.tpi.pruebas.dtos;
+import com.tpi.pruebas.clients.VehiculoClient;
+import com.tpi.pruebas.dtos.EmpleadoDTO;
+import com.tpi.pruebas.dtos.InteresadoDTO;
+import com.tpi.pruebas.dtos.VehiculoDTO;
 
 import java.time.LocalDateTime;
 
@@ -7,25 +11,22 @@ public class PruebaDTO {
     private LocalDateTime fechaHoraInicio;
     private LocalDateTime fechaHoraFin;
     private String comentario;
-    private Long idEmpleado;
-    private Long idInteresado;
-    private Long idVehiculo;
 
-    // Constructor vacío
-    public PruebaDTO() {}
 
-    // Constructor completo
-    public PruebaDTO(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentario, Long idEmpleado, Long idInteresado, Long idVehiculo) {
+    private EmpleadoDTO emplado;
+    private InteresadoDTO interesado;
+    private VehiculoDTO vehiculo;
+    public PruebaDTO(){}
+
+    public PruebaDTO(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentario, EmpleadoDTO emplado, InteresadoDTO interesado, VehiculoDTO vehiculo) {
         this.id = id;
         this.fechaHoraInicio = fechaHoraInicio;
         this.fechaHoraFin = fechaHoraFin;
         this.comentario = comentario;
-        this.idEmpleado = idEmpleado;
-        this.idInteresado = idInteresado;
-        this.idVehiculo = idVehiculo;
+        this.emplado = emplado;
+        this.interesado = interesado;
+        this.vehiculo = vehiculo;
     }
-
-    // Getters y Setters...
 
     public Long getId() {
         return id;
@@ -59,27 +60,27 @@ public class PruebaDTO {
         this.comentario = comentario;
     }
 
-    public Long getIdEmpleado() {
-        return idEmpleado;
+    public EmpleadoDTO getEmplado() {
+        return emplado;
     }
 
-    public void setIdEmpleado(Long idEmpleado) {
-        this.idEmpleado = idEmpleado;
+    public void setEmpleado(EmpleadoDTO emplado) {
+        this.emplado = emplado;
     }
 
-    public Long getIdInteresado() {
-        return idInteresado;
+    public InteresadoDTO getInteresado() {
+        return interesado;
     }
 
-    public void setIdInteresado(Long idInteresado) {
-        this.idInteresado = idInteresado;
+    public void setInteresado(InteresadoDTO interesado) {
+        this.interesado = interesado;
     }
 
-    public Long getIdVehiculo() {
-        return idVehiculo;
+    public VehiculoDTO getVehiculo() {
+        return vehiculo;
     }
 
-    public void setIdVehiculo(Long idVehiculo) {
-        this.idVehiculo = idVehiculo;
+    public void setVehiculo(VehiculoDTO vehiculo) {
+        this.vehiculo = vehiculo;
     }
 }

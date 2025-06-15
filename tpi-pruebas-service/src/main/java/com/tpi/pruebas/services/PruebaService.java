@@ -1,39 +1,65 @@
 package com.tpi.pruebas.services;
-
+import com.tpi.pruebas.clients.EmpleadoClient;
+import com.tpi.pruebas.clients.InteresadoClient;
+import com.tpi.pruebas.clients.VehiculoClient;
+import com.tpi.pruebas.dtos.EmpleadoDTO;
+import com.tpi.pruebas.dtos.InteresadoDTO;
 import com.tpi.pruebas.dtos.PruebaDTO;
+import com.tpi.pruebas.dtos.VehiculoDTO;
 import com.tpi.pruebas.entities.Prueba;
 import com.tpi.pruebas.repositories.PruebaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PruebaService {
-
     private final PruebaRepository pruebaRepository;
-
-    public PruebaService(PruebaRepository pruebaRepository) {
+    private final EmpleadoClient empleadoClient;
+    private final InteresadoClient interesadoClient;
+    private final VehiculoClient vehiculoClient;
+    public PruebaService(PruebaRepository pruebaRepository, EmpleadoClient empleadoClient, InteresadoClient interesadoClient, VehiculoClient vehiculoClient){
         this.pruebaRepository = pruebaRepository;
+        this.empleadoClient = empleadoClient;
+        this.interesadoClient = interesadoClient;
+        this.vehiculoClient = vehiculoClient;
     }
 
-    public List<Prueba> listar() {
-        return pruebaRepository.findAll();
+    public List<PruebaDTO> listar(){
+        return pruebaRepository.findAll().stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
-
-    public Optional<Prueba> obtenerPorId(Long id) {
-        return pruebaRepository.findById(id);
+    public Optional<PruebaDTO> obtenerPorId(Long id){
+        return pruebaRepository.findById(id)
+                .map(this::toDto);
     }
-
-    public Prueba crear(Prueba prueba) {
-        return pruebaRepository.save(prueba);
+    public PruebaDTO crear(Prueba prueba){
+        Prueba saved = pruebaRepository.save(prueba);
+        return toDto(saved);
     }
-
-    public boolean eliminar(Long id) {
+    public boolean eliminar (Long id){
         if (pruebaRepository.existsById(id)) {
             pruebaRepository.deleteById(id);
             return true;
         }
         return false;
+    }
+
+    private PruebaDTO toDto(Prueba e){
+        EmpleadoDTO emp = empleadoClient.getEmpleado(e.getIdEmpleado());
+        InteresadoDTO intz = interesadoClient.getInteresado(e.getIdInteresado());
+        VehiculoDTO veh = vehiculoClient.obtenerVehiculo(e.getIdVehiculo());
+        PruebaDTO dto = new PruebaDTO();
+        dto.setId(e.getId());
+        dto.setFechaHoraInicio(e.getFechaHoraInicio());
+        dto.setFechaHoraFin(e.getFechaHoraFin());
+        dto.setComentario(e.getComentarios());
+        dto.setEmpleado(emp);
+        dto.setInteresado(intz);
+        dto.setVehiculo(veh);
+        return dto;
     }
 }

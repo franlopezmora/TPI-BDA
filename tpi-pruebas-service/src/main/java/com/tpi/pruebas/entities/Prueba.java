@@ -1,92 +1,46 @@
 package com.tpi.pruebas.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "Pruebas")
 public class Prueba {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
-    private Long id;
+    @Column(name="ID")
 
+    private Long Id;
     @Column(name = "FECHA_HORA_INICIO", nullable = false)
     private LocalDateTime fechaHoraInicio;
-
-    @Column(name = "FECHA_HORA_FIN")
+    @Column(name = "FECHA_HORA_FIN", nullable = false)
     private LocalDateTime fechaHoraFin;
+    @Column(name="COMENTARIOS")
+    private String comentarios;
+    @Column(name="ID_EMPLEADO", nullable = false)
+    private Long idEmpleado;
+    @Column(name = "ID_INTERESADO", nullable = false)
+    private Long idInteresado;
+    @Column(name = "ID_VEHICULO", nullable = false)
+    private Long idVehiculo;
 
-    @Column(name = "COMENTARIOS")
-    private String comentario;
-
-    @ManyToOne
-    @JoinColumn(
-            name = "ID_EMPLEADO",
-            foreignKey = @ForeignKey(name = "Pruebas_Empleados_FK")
-    )
-    private Empleado empleado;
-
-    @ManyToOne
-    @JoinColumn(
-            name = "ID_INTERESADO",
-            foreignKey = @ForeignKey(name = "Pruebas_Interesados_FK")
-    )
-    private Interesado interesado;
-
-    @ManyToOne
-    @JoinColumn(
-            name = "ID_VEHICULO",
-            foreignKey = @ForeignKey(name = "Pruebas_Vehiculos_FK")
-    )
-    private Vehiculo vehiculo;
-
-    @OneToMany(mappedBy = "prueba")
-    @JsonIgnore
-    private List<Notificacion> notificaciones = new ArrayList<>();
-
-    public Prueba() {
-    }
-
-    public Prueba(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentario, Empleado empleado, Interesado interesado, Vehiculo vehiculo, List<Notificacion> notificaciones) {
-        this.id = id;
+    public Prueba(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentarios, Long idEmpleado, Long idInteresado, Long idVehiculo) {
+        Id = id;
         this.fechaHoraInicio = fechaHoraInicio;
         this.fechaHoraFin = fechaHoraFin;
-        this.comentario = comentario;
-        this.empleado = empleado;
-        this.interesado = interesado;
-        this.vehiculo = vehiculo;
-        this.notificaciones = notificaciones;
+        this.comentarios = comentarios;
+        this.idEmpleado = idEmpleado;
+        this.idInteresado = idInteresado;
+        this.idVehiculo = idVehiculo;
     }
-
-    @Override
-    public String toString() {
-        return "Prueba{" +
-                "id=" + id +
-                ", fechaHoraInicio=" + fechaHoraInicio +
-                ", fechaHoraFin=" + fechaHoraFin +
-                ", comentario='" + comentario + '\'' +
-                ", empleado=" + empleado +
-                ", interesado=" + interesado +
-                ", vehiculo=" + vehiculo +
-                ", notificaciones=" + notificaciones +
-                '}';
-    }
-
+    public Prueba (){}
     public Long getId() {
-        return id;
+        return Id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        Id = id;
     }
 
     public LocalDateTime getFechaHoraInicio() {
@@ -105,43 +59,35 @@ public class Prueba {
         this.fechaHoraFin = fechaHoraFin;
     }
 
-    public String getComentario() {
-        return comentario;
+    public String getComentarios() {
+        return comentarios;
     }
 
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
+    public void setComentarios(String comentarios) {
+        this.comentarios = comentarios;
     }
 
-    public Empleado getEmpleado() {
-        return empleado;
+    public Long getIdEmpleado() {
+        return idEmpleado;
     }
 
-    public void setEmpleado(Empleado empleado) {
-        this.empleado = empleado;
+    public void setIdEmpleado(Long idEmpleado) {
+        this.idEmpleado = idEmpleado;
     }
 
-    public Interesado getInteresado() {
-        return interesado;
+    public Long getIdInteresado() {
+        return idInteresado;
     }
 
-    public void setInteresado(Interesado interesado) {
-        this.interesado = interesado;
+    public void setIdInteresado(Long idInteresado) {
+        this.idInteresado = idInteresado;
     }
 
-    public Vehiculo getVehiculo() {
-        return vehiculo;
+    public Long getIdVehiculo() {
+        return idVehiculo;
     }
 
-    public void setVehiculo(Vehiculo vehiculo) {
-        this.vehiculo = vehiculo;
-    }
-
-    public List<Notificacion> getNotificaciones() {
-        return notificaciones;
-    }
-
-    public void setNotificaciones(List<Notificacion> notificaciones) {
-        this.notificaciones = notificaciones;
+    public void setIdVehiculo(Long idVehiculo) {
+        this.idVehiculo = idVehiculo;
     }
 }
