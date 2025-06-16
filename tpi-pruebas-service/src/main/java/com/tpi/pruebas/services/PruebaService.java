@@ -10,6 +10,7 @@ import com.tpi.pruebas.entities.Prueba;
 import com.tpi.pruebas.repositories.PruebaRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +38,18 @@ public class PruebaService {
                 .map(this::toDto);
     }
     public PruebaDTO crear(Prueba prueba){
+        InteresadoDTO interesado = interesadoClient.getInteresado(prueba.getIdInteresado());
+        if(interesado.getRestringido() != null && interesado.getRestringido()){
+            throw  new IllegalArgumentException("El interesado está restringido y no puede realizar pruebas en esta agencia.");
+        }
+        if (interesado.getFechaVencimientoLicencia() == null || interesado.getFechaVencimientoLicencia().isBefore(LocalDate.now())){
+           throw  new IllegalArgumentException("La licencia del interesado está vencida");
+        }
+
+        //FALTA VALIDAR EL VEHÍCULO.
+        //VehiculoDto vehiculo = vehiculoClient.obtenerVehiculo(prueba.getVehiculo().getId().LongValue());
+        // if (vehiculo.getEnPrueba() != null && vehiculo.getEnprueba()){
+        // throw new IllegalArgumentException("El vehiculo ya se encuentra en prueba")}
         Prueba saved = pruebaRepository.save(prueba);
         return toDto(saved);
     }

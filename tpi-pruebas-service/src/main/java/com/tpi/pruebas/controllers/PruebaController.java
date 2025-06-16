@@ -3,6 +3,7 @@ package com.tpi.pruebas.controllers;
 import com.tpi.pruebas.dtos.PruebaDTO;
 import com.tpi.pruebas.entities.Prueba;
 import com.tpi.pruebas.services.PruebaService;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,16 +32,24 @@ public class PruebaController {
     }
 
     @PostMapping
-    public PruebaDTO crear(@RequestBody PruebaDTO pruebaDTO) {
+    public ResponseEntity<?> crear(@RequestBody PruebaDTO pruebaDTO) {
 
-        Prueba entidad = new Prueba();
+        try{Prueba entidad = new Prueba();
         entidad.setFechaHoraInicio(pruebaDTO.getFechaHoraInicio());
         entidad.setFechaHoraFin(pruebaDTO.getFechaHoraFin());
         entidad.setComentarios(pruebaDTO.getComentario());
         entidad.setIdEmpleado(pruebaDTO.getEmplado().getLegajo());
         entidad.setIdInteresado(pruebaDTO.getInteresado().getId());
         entidad.setIdVehiculo(pruebaDTO.getVehiculo().getId());
-        return pruebaService.crear(entidad);
+        PruebaDTO creada =  pruebaService.crear(entidad);
+        return ResponseEntity.ok(creada);
+        }
+        catch(IllegalArgumentException ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+        catch(Exception ex){
+            return ResponseEntity.status(500).body("Internal Server Error");
+        }
     }
 
     @DeleteMapping("/{id}")
