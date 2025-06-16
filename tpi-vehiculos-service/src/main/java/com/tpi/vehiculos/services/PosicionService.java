@@ -1,12 +1,17 @@
 package com.tpi.vehiculos.services;
 
+import com.tpi.vehiculos.dtos.PosicionDTO;
 import com.tpi.vehiculos.entities.Posicion;
+import com.tpi.vehiculos.entities.Vehiculo;
 import com.tpi.vehiculos.repositories.PosicionRepository;
+import com.tpi.vehiculos.repositories.VehiculoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PosicionService {
@@ -20,6 +25,13 @@ public class PosicionService {
     public List<Posicion> listar() {
         return posicionRepository.findAll();
     }
+
+    public List<PosicionDTO> listarDTO() {
+        return posicionRepository.findAll().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
 
     public Optional<Posicion> obtenerPorId(Long id) {
         return posicionRepository.findById(id);
@@ -54,6 +66,32 @@ public class PosicionService {
 
     public List<Posicion> buscarPorRangoFechas(LocalDateTime inicio, LocalDateTime fin) {
         return posicionRepository.findByFechaHoraBetween(inicio, fin);
+    }
+
+    public PosicionDTO toDTO(Posicion posicion) {
+        return new PosicionDTO(
+                posicion.getId(),
+                posicion.getFechaHora(),
+                posicion.getLatitud(),
+                posicion.getLongitud(),
+                posicion.getVehiculo() != null ? posicion.getVehiculo().getId().longValue() : null
+        );
+    }
+
+
+    @Autowired
+    private VehiculoRepository vehiculoRepository;
+
+    public Posicion fromDTO(PosicionDTO dto, Long idVehiculo) {
+        Vehiculo vehiculo = vehiculoRepository.findById(idVehiculo)
+                .orElseThrow(() -> new IllegalArgumentException("Vehículo no encontrado"));
+        Posicion p = new Posicion();
+        p.setId(dto.getId());
+        p.setLatitud(dto.getLatitud());
+        p.setLongitud(dto.getLongitud());
+        p.setFechaHora(dto.getFechaHora());
+        p.setVehiculo(vehiculo);
+        return p;
     }
 
 }
