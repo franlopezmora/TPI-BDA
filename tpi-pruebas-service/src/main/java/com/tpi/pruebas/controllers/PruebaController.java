@@ -38,7 +38,7 @@ public class PruebaController {
         entidad.setFechaHoraInicio(pruebaDTO.getFechaHoraInicio());
         entidad.setFechaHoraFin(pruebaDTO.getFechaHoraFin());
         entidad.setComentarios(pruebaDTO.getComentario());
-        entidad.setIdEmpleado(pruebaDTO.getEmplado().getLegajo());
+        entidad.setIdEmpleado(pruebaDTO.getEmpleado().getLegajo());
         entidad.setIdInteresado(pruebaDTO.getInteresado().getId());
         entidad.setIdVehiculo(pruebaDTO.getVehiculo().getId());
         PruebaDTO creada =  pruebaService.crear(entidad);
