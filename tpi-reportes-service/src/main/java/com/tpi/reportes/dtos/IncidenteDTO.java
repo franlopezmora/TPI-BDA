@@ -3,18 +3,67 @@ package com.tpi.reportes.dtos;
 import java.time.LocalDateTime;
 
 public class IncidenteDTO {
+    private Long id;
+    private String mensaje;
+    private String tipo; // "Peligro" o "Radio"
+    private String telefono;
+    private LocalDateTime fecha;
+    private Long legajoEmpleado;
     private Long idPrueba;
-    private Integer nroIncidente;
-    private String tipoIncidente;
-    private LocalDateTime fechaHora;
+    private String nombreEmpleado;
+    private String apellidoEmpleado;
+    private String nombreInteresado;
+    private String apellidoInteresado;
 
-    public IncidenteDTO(){}
+    // Getters y setters
 
-    public IncidenteDTO(Long idPrueba, Integer nroIncidente, String tipoIncidente, LocalDateTime fechaHora) {
-        this.idPrueba = idPrueba;
-        this.nroIncidente = nroIncidente;
-        this.tipoIncidente = tipoIncidente;
-        this.fechaHora = fechaHora;
+
+    public Long getLegajoEmpleado() {
+        return legajoEmpleado;
+    }
+
+    public void setLegajoEmpleado(Long legajoEmpleado) {
+        this.legajoEmpleado = legajoEmpleado;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
     }
 
     public Long getIdPrueba() {
@@ -25,37 +74,35 @@ public class IncidenteDTO {
         this.idPrueba = idPrueba;
     }
 
-    public Integer getNroIncidente() {
-        return nroIncidente;
+    public String getNombreEmpleado() {
+        return nombreEmpleado;
     }
 
-    public void setNroIncidente(Integer nroIncidente) {
-        this.nroIncidente = nroIncidente;
+    public void setNombreEmpleado(String nombreEmpleado) {
+        this.nombreEmpleado = nombreEmpleado;
     }
 
-    public String getTipoIncidente() {
-        return tipoIncidente;
+    public String getApellidoEmpleado() {
+        return apellidoEmpleado;
     }
 
-    public void setTipoIncidente(String tipoIncidente) {
-        this.tipoIncidente = tipoIncidente;
+    public void setApellidoEmpleado(String apellidoEmpleado) {
+        this.apellidoEmpleado = apellidoEmpleado;
     }
 
-    public LocalDateTime getFechaHora() {
-        return fechaHora;
+    public String getNombreInteresado() {
+        return nombreInteresado;
     }
 
-    public void setFechaHora(LocalDateTime fechaHora) {
-        this.fechaHora = fechaHora;
+    public void setNombreInteresado(String nombreInteresado) {
+        this.nombreInteresado = nombreInteresado;
     }
 
-    @Override
-    public String toString() {
-        return "IncidenteDTO{" +
-                "idPrueba=" + idPrueba +
-                ", nroIncidente=" + nroIncidente +
-                ", tipoIncidente='" + tipoIncidente + '\'' +
-                ", fechaHora=" + fechaHora +
-                '}';
+    public String getApellidoInteresado() {
+        return apellidoInteresado;
+    }
+
+    public void setApellidoInteresado(String apellidoInteresado) {
+        this.apellidoInteresado = apellidoInteresado;
     }
 }
