@@ -21,4 +21,14 @@ cd "tpi-gateway-service"
 mvn clean package -DskipTests
 cd ..
 
+echo "📦 Building tpi-notificaciones-service..."
+cd "tpi-notificaciones-service"
+mvn clean package -DskipTests
+cd ..
+
+echo "📦 Building tpi-pruebas-service..."
+cd "tpi-pruebas-service"
+mvn clean package -DskipTests
+cd ..
+
 echo "✅ All builds completed."
