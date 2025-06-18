@@ -37,6 +37,22 @@ services:
       - postgres
     ports:
       - "8083:8083"
+      
+  notificaciones-service:
+    build: ./tpi-notificaciones-service
+    container_name: tpi-notificaciones-service
+    depends_on:
+      - postgres
+    ports:
+      - "8084:8084"
+
+  pruebas-service:
+    build: ./tpi-pruebas-service
+    container_name: tpi-pruebas-service
+    depends_on:
+      - postgres
+    ports:
+      - "8085:8085"
 
   gateway:
     build: ./tpi-gateway-service
@@ -45,5 +61,6 @@ services:
       - admin-service
       - vehiculos-service
       - reportes-service
+      - notificaciones-service 
     ports:
       - "8080:8080"
