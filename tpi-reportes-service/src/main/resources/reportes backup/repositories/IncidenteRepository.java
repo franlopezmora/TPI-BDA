@@ -1,7 +1,6 @@
 package com.tpi.reportes.repositories;
 
 import com.tpi.reportes.entities.Incidente;
-import com.tpi.reportes.entities.IncidenteId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

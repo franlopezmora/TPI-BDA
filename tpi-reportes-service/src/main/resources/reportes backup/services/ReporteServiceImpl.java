@@ -2,6 +2,7 @@ package com.tpi.reportes.services;
 
 import com.tpi.reportes.clients.PruebaClient;
 import com.tpi.reportes.dtos.*;
+import com.tpi.reportes.dtos.IncidenteDTO;
 import com.tpi.reportes.repositories.IncidenteRepository;
 import com.tpi.reportes.repositories.TipoIncidenteRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +40,7 @@ public class ReporteServiceImpl implements ReporteService {
     }
 
     @Override
-    public List<IncidenteDTO> obtenerTodosLosIncidentes() {
+    public List<com.tpi.reportes.dtos.IncidenteDTO> obtenerTodosLosIncidentes() {
         return incidenteRepository.findAll().stream()
                 .map(i -> new IncidenteDTO(
                         i.getIncidenteId().getIdPrueba(),

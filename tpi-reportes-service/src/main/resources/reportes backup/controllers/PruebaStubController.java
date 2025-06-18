@@ -2,7 +2,7 @@
 //
 //
 //
-//import com.tpi.reportes.dtos.PruebaDTO;
+//import dtos.reportes backup.reportes.com.tpi.reportes.PruebaDTO;
 //import org.springframework.web.bind.annotation.*;
 //
 //import java.time.LocalDateTime;
