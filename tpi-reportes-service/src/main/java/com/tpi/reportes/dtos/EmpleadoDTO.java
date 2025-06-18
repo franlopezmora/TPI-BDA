@@ -4,9 +4,8 @@ public class EmpleadoDTO {
     private Long legajo;
     private String nombre;
     private String apellido;
-
-    public EmpleadoDTO() {
-    }
+    private String telefonoContacto;
+    // Getters y setters
 
     public Long getLegajo() {
         return legajo;
@@ -32,7 +31,11 @@ public class EmpleadoDTO {
         this.apellido = apellido;
     }
 
-    public String getNombreCompleto() {
-        return nombre + " " + apellido;
+    public String getTelefonoContacto() {
+        return telefonoContacto;
+    }
+
+    public void setTelefonoContacto(String telefonoContacto) {
+        this.telefonoContacto = telefonoContacto;
     }
 }

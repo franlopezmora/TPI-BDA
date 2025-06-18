@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.tpi.reportes.clients")
 public class TpiReportesServiceApplication {
 
 	public static void main(String[] args) {

@@ -13,17 +13,17 @@ public class PruebaDTO {
     private String comentario;
 
 
-    private EmpleadoDTO emplado;
+    private EmpleadoDTO empleado;
     private InteresadoDTO interesado;
     private VehiculoDTO vehiculo;
     public PruebaDTO(){}
 
-    public PruebaDTO(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentario, EmpleadoDTO emplado, InteresadoDTO interesado, VehiculoDTO vehiculo) {
+    public PruebaDTO(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentario, EmpleadoDTO empleado, InteresadoDTO interesado, VehiculoDTO vehiculo) {
         this.id = id;
         this.fechaHoraInicio = fechaHoraInicio;
         this.fechaHoraFin = fechaHoraFin;
         this.comentario = comentario;
-        this.emplado = emplado;
+        this.empleado = empleado;
         this.interesado = interesado;
         this.vehiculo = vehiculo;
     }
@@ -60,12 +60,12 @@ public class PruebaDTO {
         this.comentario = comentario;
     }
 
-    public EmpleadoDTO getEmplado() {
-        return emplado;
+    public EmpleadoDTO getEmpleado() {
+        return empleado;
     }
 
-    public void setEmpleado(EmpleadoDTO emplado) {
-        this.emplado = emplado;
+    public void setEmpleado(EmpleadoDTO empleado) {
+        this.empleado = empleado;
     }
 
     public InteresadoDTO getInteresado() {

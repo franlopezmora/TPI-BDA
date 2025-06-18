@@ -2,15 +2,17 @@ package com.tpi.pruebas.services;
 import com.tpi.pruebas.clients.EmpleadoClient;
 import com.tpi.pruebas.clients.InteresadoClient;
 import com.tpi.pruebas.clients.VehiculoClient;
-import com.tpi.pruebas.dtos.EmpleadoDTO;
-import com.tpi.pruebas.dtos.InteresadoDTO;
-import com.tpi.pruebas.dtos.PruebaDTO;
-import com.tpi.pruebas.dtos.VehiculoDTO;
+import com.tpi.pruebas.dtos.*;
+import com.tpi.pruebas.entities.Incidente;
 import com.tpi.pruebas.entities.Prueba;
+import com.tpi.pruebas.entities.TipoIncidente;
+import com.tpi.pruebas.repositories.IncidenteRepository;
 import com.tpi.pruebas.repositories.PruebaRepository;
+import com.tpi.pruebas.repositories.TipoIncidenteRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,11 +23,15 @@ public class PruebaService {
     private final EmpleadoClient empleadoClient;
     private final InteresadoClient interesadoClient;
     private final VehiculoClient vehiculoClient;
-    public PruebaService(PruebaRepository pruebaRepository, EmpleadoClient empleadoClient, InteresadoClient interesadoClient, VehiculoClient vehiculoClient){
+    private final IncidenteRepository incidenteRepository;
+    private final TipoIncidenteRepository tipoIncidenteRepository;
+    public PruebaService(PruebaRepository pruebaRepository, EmpleadoClient empleadoClient, InteresadoClient interesadoClient, VehiculoClient vehiculoClient, IncidenteRepository incidenteRepository, TipoIncidenteRepository tipoIncidenteRepository){
         this.pruebaRepository = pruebaRepository;
         this.empleadoClient = empleadoClient;
         this.interesadoClient = interesadoClient;
         this.vehiculoClient = vehiculoClient;
+        this.incidenteRepository = incidenteRepository;
+        this.tipoIncidenteRepository = tipoIncidenteRepository;
     }
 
     public List<PruebaDTO> listar(){
@@ -74,5 +80,56 @@ public class PruebaService {
         dto.setInteresado(intz);
         dto.setVehiculo(veh);
         return dto;
+    }
+
+    public void registrarIncidente(Long idPrueba, String nombreTipoIncidente) {
+        Prueba prueba = pruebaRepository.findById(idPrueba)
+                .orElseThrow(() -> new IllegalArgumentException("Prueba no encontrada"));
+
+        TipoIncidente tipo = tipoIncidenteRepository.findByNombreIncidente(nombreTipoIncidente)
+                .orElseThrow(() -> new IllegalArgumentException("Tipo de incidente no válido"));
+
+        Incidente incidente = new Incidente();
+        incidente.setPrueba(prueba);
+        incidente.setTipoIncidente(tipo);
+        incidente.setFechaHora(LocalDateTime.now());
+
+        incidenteRepository.save(incidente);
+    }
+
+    public List<IncidenteDTO> listarIncidentes() {
+        return incidenteRepository.findAll().stream().map(incidente -> {
+            IncidenteDTO dto = new IncidenteDTO();
+            dto.setId(incidente.getId());
+            dto.setFecha(incidente.getFechaHora());
+
+            if (incidente.getTipoIncidente() != null) {
+                dto.setTipo(incidente.getTipoIncidente().getNombreIncidente());
+            }
+
+            Prueba prueba = incidente.getPrueba();
+            if (prueba != null) {
+                dto.setIdPrueba(prueba.getId());
+
+                EmpleadoDTO emp = empleadoClient.getEmpleado(prueba.getIdEmpleado());
+                InteresadoDTO intz = interesadoClient.getInteresado(prueba.getIdInteresado());
+
+                if (emp != null) {
+                    dto.setLegajoEmpleado(emp.getLegajo());
+                    dto.setNombreEmpleado(emp.getNombre());
+                    dto.setApellidoEmpleado(emp.getApellido());
+                    dto.setTelefono(emp.getTelefonoContacto());
+                }
+
+                if (intz != null) {
+                    dto.setNombreInteresado(intz.getNombre());
+                    dto.setApellidoInteresado(intz.getApellido());
+                }
+
+                dto.setMensaje("Incidente detectado durante la prueba"); // mensaje estático o podés ajustarlo
+            }
+
+            return dto;
+        }).toList();
     }
 }
