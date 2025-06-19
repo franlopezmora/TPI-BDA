@@ -44,4 +44,8 @@ public class InteresadoService {
     public void eliminarInteresado(Long id) {
         interesadoRepository.deleteById(id);
     }
+
+    public List<Interesado> listarRestringidos() {
+        return interesadoRepository.findByRestringidoTrue();
+    }
 }

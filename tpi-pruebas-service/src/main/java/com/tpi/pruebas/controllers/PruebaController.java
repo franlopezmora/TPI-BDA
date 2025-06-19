@@ -1,5 +1,6 @@
 package com.tpi.pruebas.controllers;
 
+import com.tpi.pruebas.dtos.PosicionDTO;
 import com.tpi.pruebas.dtos.PruebaDTO;
 import com.tpi.pruebas.entities.Prueba;
 import com.tpi.pruebas.services.PruebaService;
@@ -59,4 +60,18 @@ public class PruebaController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/validar-posicion")
+    public ResponseEntity<Void> validarPosicion(@RequestBody PosicionDTO dto) {
+        pruebaService.validarPosicion(dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/activas")
+    public List<PruebaDTO> listarPruebasActivas() {
+        return pruebaService.listar().stream()
+                .filter(p -> p.getFechaHoraFin() == null)
+                .toList();
+    }
+
 }
