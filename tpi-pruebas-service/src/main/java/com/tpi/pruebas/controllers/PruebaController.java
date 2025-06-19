@@ -3,7 +3,6 @@ package com.tpi.pruebas.controllers;
 import com.tpi.pruebas.dtos.PruebaDTO;
 import com.tpi.pruebas.entities.Prueba;
 import com.tpi.pruebas.services.PruebaService;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
