@@ -78,7 +78,23 @@ CREATE TABLE Zonas_Peligrosas (
     LAT_SURESTE DOUBLE PRECISION NOT NULL,
     LON_SURESTE DOUBLE PRECISION NOT NULL
 );
-ALTER INDEX zonas_peligrosas_pkey RENAME TO Zonas_Peligrosas_PK;
+
+CREATE TABLE Tipos_Incidente (
+    ID BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    NOMBRE_INCIDENTE VARCHAR(255) NOT NULL,
+    DESCRIPCION VARCHAR(255)
+);
+
+
+CREATE TABLE Incidentes (
+    ID BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    ID_PRUEBA BIGINT NOT NULL,
+    ID_TIPO_INCIDENTE BIGINT NOT NULL,
+    FECHA_HORA TIMESTAMP NOT NULL,
+    CONSTRAINT Incidentes_Pruebas_FK FOREIGN KEY (ID_PRUEBA) REFERENCES Pruebas(ID),
+    CONSTRAINT Incidentes_TipoIncidente_FK FOREIGN KEY (ID_TIPO_INCIDENTE) REFERENCES Tipos_Incidente(ID)
+);
+
 
 -- Renombrar las PK generadas por defecto
 ALTER INDEX vehiculos_pkey RENAME TO Vehiculos_PK;
@@ -89,3 +105,5 @@ ALTER INDEX posiciones_pkey RENAME TO Posiciones_PK;
 ALTER INDEX notificaciones_pkey RENAME TO Notificaciones_PK;
 ALTER INDEX marcas_pkey RENAME TO Marcas_PK;
 ALTER INDEX modelos_pkey RENAME TO Modelos_PK;
+ALTER INDEX zonas_peligrosas_pkey RENAME TO Zonas_Peligrosas_PK;
+ALTER INDEX tipos_incidente_pkey RENAME TO Tipos_Incidente_PK;

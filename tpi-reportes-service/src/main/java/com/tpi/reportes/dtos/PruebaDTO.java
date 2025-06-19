@@ -1,8 +1,4 @@
-package com.tpi.pruebas.dtos;
-import com.tpi.pruebas.clients.VehiculoClient;
-import com.tpi.pruebas.dtos.EmpleadoDTO;
-import com.tpi.pruebas.dtos.InteresadoDTO;
-import com.tpi.pruebas.dtos.VehiculoDTO;
+package com.tpi.reportes.dtos;
 
 import java.time.LocalDateTime;
 
@@ -11,22 +7,9 @@ public class PruebaDTO {
     private LocalDateTime fechaHoraInicio;
     private LocalDateTime fechaHoraFin;
     private String comentario;
-
-
+    private VehiculoDTO vehiculo;
     private EmpleadoDTO empleado;
     private InteresadoDTO interesado;
-    private VehiculoDTO vehiculo;
-    public PruebaDTO(){}
-
-    public PruebaDTO(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentario, EmpleadoDTO empleado, InteresadoDTO interesado, VehiculoDTO vehiculo) {
-        this.id = id;
-        this.fechaHoraInicio = fechaHoraInicio;
-        this.fechaHoraFin = fechaHoraFin;
-        this.comentario = comentario;
-        this.empleado = empleado;
-        this.interesado = interesado;
-        this.vehiculo = vehiculo;
-    }
 
     public Long getId() {
         return id;
@@ -60,6 +43,14 @@ public class PruebaDTO {
         this.comentario = comentario;
     }
 
+    public VehiculoDTO getVehiculo() {
+        return vehiculo;
+    }
+
+    public void setVehiculo(VehiculoDTO vehiculo) {
+        this.vehiculo = vehiculo;
+    }
+
     public EmpleadoDTO getEmpleado() {
         return empleado;
     }
@@ -74,13 +65,5 @@ public class PruebaDTO {
 
     public void setInteresado(InteresadoDTO interesado) {
         this.interesado = interesado;
-    }
-
-    public VehiculoDTO getVehiculo() {
-        return vehiculo;
-    }
-
-    public void setVehiculo(VehiculoDTO vehiculo) {
-        this.vehiculo = vehiculo;
     }
 }
