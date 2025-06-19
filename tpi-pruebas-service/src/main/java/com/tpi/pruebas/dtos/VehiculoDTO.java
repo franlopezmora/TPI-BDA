@@ -5,6 +5,7 @@ public class VehiculoDTO {
     private String patente;
     private Integer anio;
     private Long idModelo;
+    private boolean enPrueba;
 
     public VehiculoDTO() {}
 
@@ -13,6 +14,7 @@ public class VehiculoDTO {
         this.patente = patente;
         this.anio = anio;
         this.idModelo = idModelo;
+        this.enPrueba = true;
     }
 
     // Getters y setters
@@ -48,4 +50,13 @@ public class VehiculoDTO {
     public void setIdModelo(Long idModelo) {
         this.idModelo = idModelo;
     }
+
+    public void setEnPrueba(boolean enPrueba){
+        this.enPrueba = enPrueba;
+    }
+
+    public boolean getEnPrueba(){
+        return enPrueba;
+    }
+
 }

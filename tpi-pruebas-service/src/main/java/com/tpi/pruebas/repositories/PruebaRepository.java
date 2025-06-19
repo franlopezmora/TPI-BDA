@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface PruebaRepository extends JpaRepository<Prueba, Long> {
     List<Prueba> findByIdVehiculoAndFechaHoraFinIsNull(Long idVehiculo);
-
+    List <Prueba> findByFechaHoraFinIsNull();
     List<Prueba> id(Long id);
 }

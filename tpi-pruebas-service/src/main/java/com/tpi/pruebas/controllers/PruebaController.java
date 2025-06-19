@@ -52,6 +52,22 @@ public class PruebaController {
         }
     }
 
+    @GetMapping("/en-curso")
+    public List<PruebaDTO> pruebasEnCurso(){
+        return pruebaService.listarPruebasEnCurso();
+    }
+
+    @PutMapping("/{id}/finalizar")
+    public ResponseEntity<PruebaDTO> finalizarPrueba(@PathVariable Long id, @RequestBody String comentario){
+        try{
+            PruebaDTO pruebaFinalizada = pruebaService.finalizarPrueba(id, comentario);
+            return ResponseEntity.ok(pruebaFinalizada);
+        }
+        catch(IllegalArgumentException e){
+            return ResponseEntity.status(404).body(null);
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         if (pruebaService.eliminar(id)) {

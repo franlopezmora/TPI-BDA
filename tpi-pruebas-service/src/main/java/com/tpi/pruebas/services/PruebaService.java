@@ -11,6 +11,7 @@ import com.tpi.pruebas.repositories.PruebaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,10 +47,10 @@ public class PruebaService {
            throw  new IllegalArgumentException("La licencia del interesado está vencida");
         }
 
-        //FALTA VALIDAR EL VEHÍCULO.
-        //VehiculoDto vehiculo = vehiculoClient.obtenerVehiculo(prueba.getVehiculo().getId().LongValue());
-        // if (vehiculo.getEnPrueba() != null && vehiculo.getEnprueba()){
-        // throw new IllegalArgumentException("El vehiculo ya se encuentra en prueba")}
+        //FALTA VALIDAR EL VEHÍCULO ahora es todo true
+        VehiculoDTO vehiculo = vehiculoClient.obtenerVehiculo(prueba.getIdVehiculo());
+         if (vehiculo.getEnPrueba()){
+         throw new IllegalArgumentException("El vehiculo ya se encuentra en prueba");}
         Prueba saved = pruebaRepository.save(prueba);
         return toDto(saved);
     }
@@ -60,6 +61,24 @@ public class PruebaService {
         }
         return false;
     }
+
+    public List<PruebaDTO> listarPruebasEnCurso(){
+        return pruebaRepository.findByFechaHoraFinIsNull()
+                .stream().map(this::toDto).collect(Collectors.toList());
+    }
+    public PruebaDTO finalizarPrueba(Long id, String comentario){
+        Prueba prueba = pruebaRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("Prueba no encontrada"));
+        if (prueba.getFechaHoraFin() != null){
+            throw new IllegalArgumentException("La prueba ya está finalizada.");
+        }
+        prueba.setFechaHoraFin(LocalDateTime.now());
+        prueba.setComentarios(comentario);
+        //vehiculoClient.finalizarPrueba(prueba.getIdVehiculo());
+        Prueba pruebaFinalizada = pruebaRepository.save(prueba);
+        return toDto(pruebaFinalizada);
+    }
+
 
     private PruebaDTO toDto(Prueba e){
         EmpleadoDTO emp = empleadoClient.getEmpleado(e.getIdEmpleado());
