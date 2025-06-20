@@ -1,5 +1,6 @@
 package com.tpi.vehiculos.services;
 
+import com.tpi.vehiculos.clients.PruebaClient;
 import com.tpi.vehiculos.dtos.PosicionDTO;
 import com.tpi.vehiculos.entities.Posicion;
 import com.tpi.vehiculos.entities.Vehiculo;
@@ -17,9 +18,11 @@ import java.util.stream.Collectors;
 public class PosicionService {
 
     private final PosicionRepository posicionRepository;
+    private final PruebaClient pruebaClient;
 
-    public PosicionService(PosicionRepository posicionRepository) {
+    public PosicionService(PosicionRepository posicionRepository, PruebaClient pruebaClient) {
         this.posicionRepository = posicionRepository;
+        this.pruebaClient = pruebaClient;
     }
 
     public List<Posicion> listar() {
@@ -38,7 +41,13 @@ public class PosicionService {
     }
 
     public Posicion crear(Posicion posicion) {
-        return posicionRepository.save(posicion);
+        Posicion guardada = posicionRepository.save(posicion);
+
+        // Llamar automáticamente a pruebas-service para validación
+        PosicionDTO dto = toDTO(guardada);
+        pruebaClient.validarPosicion(dto);
+
+        return guardada;
     }
 
     public Optional<Posicion> actualizar(Long id, Posicion posicion) {
