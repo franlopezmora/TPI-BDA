@@ -2,10 +2,10 @@ package com.tpi.admin.backup.entities;
 
 
 
-import com.tpi.admin.entities.Marca;
-import com.tpi.admin.entities.Vehiculo;
+import com.tpi.admin.backup.entities.Marca;
+import com.tpi.admin.backup.entities.Vehiculo;
 import jakarta.persistence.*;
-import com.tpi.admin.entities.*;
+import com.tpi.admin.backup.entities.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +27,15 @@ public class Modelo {
             nullable = false,
             foreignKey = @ForeignKey(name = "Modelos_Marcas_FK")
     )
-    private com.tpi.admin.entities.Marca marca;
+    private Marca marca;
 
 
     @OneToMany(mappedBy = "modelo")
-    private List<com.tpi.admin.entities.Vehiculo> vehiculos = new ArrayList<>();
+    private List<Vehiculo> vehiculos = new ArrayList<>();
 
     public Modelo() {}
 
-    public Modelo(Integer id, String descripcion, Marca marca, List<com.tpi.admin.entities.Vehiculo> vehiculos) {
+    public Modelo(Integer id, String descripcion, Marca marca, List<Vehiculo> vehiculos) {
         this.id = id;
         this.descripcion = descripcion;
         this.marca = marca;

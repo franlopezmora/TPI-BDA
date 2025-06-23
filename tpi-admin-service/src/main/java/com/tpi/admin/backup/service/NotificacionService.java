@@ -1,7 +1,7 @@
-package com.tpi.admin.services;
+package com.tpi.admin.backup.service;
 
-import com.tpi.admin.entities.Notificacion;
-import com.tpi.admin.repositories.NotificacionRepository;
+import com.tpi.admin.backup.entities.Notificacion;
+import com.tpi.admin.backup.repositories.NotificacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

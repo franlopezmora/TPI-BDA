@@ -1,6 +1,6 @@
-package com.tpi.admin.repositories;
+package com.tpi.admin.backup.repositories;
 
-import com.tpi.admin.entities.Modelo;
+import com.tpi.admin.backup.entities.Modelo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

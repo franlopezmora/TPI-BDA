@@ -1,7 +1,7 @@
-package com.tpi.admin.services;
+package com.tpi.admin.backup.service;
 
-import com.tpi.admin.entities.Modelo;
-import com.tpi.admin.repositories.ModeloRepository;
+import com.tpi.admin.backup.entities.Modelo;
+import com.tpi.admin.backup.repositories.ModeloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

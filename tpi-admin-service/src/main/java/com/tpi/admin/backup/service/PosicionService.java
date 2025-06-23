@@ -1,7 +1,7 @@
-package com.tpi.admin.services;
+package com.tpi.admin.backup.service;
 
-import com.tpi.admin.entities.Posicion;
-import com.tpi.admin.repositories.PosicionRepository;
+import com.tpi.admin.backup.entities.Posicion;
+import com.tpi.admin.backup.repositories.PosicionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

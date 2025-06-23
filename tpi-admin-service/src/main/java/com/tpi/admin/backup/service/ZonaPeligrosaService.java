@@ -1,7 +1,7 @@
-package com.tpi.admin.services;
+package com.tpi.admin.backup.service;
 
-import com.tpi.admin.entities.ZonaPeligrosa;
-import com.tpi.admin.repositories.ZonaPeligrosaRepository;
+import com.tpi.admin.backup.entities.ZonaPeligrosa;
+import com.tpi.admin.backup.repositories.ZonaPeligrosaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
