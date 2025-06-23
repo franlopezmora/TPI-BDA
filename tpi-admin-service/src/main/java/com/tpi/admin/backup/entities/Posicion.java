@@ -1,5 +1,4 @@
-package com.tpi.admin.entities;
-
+package com.tpi.admin.backup.entities;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

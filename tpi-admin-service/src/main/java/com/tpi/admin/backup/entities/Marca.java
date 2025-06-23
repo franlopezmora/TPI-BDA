@@ -1,4 +1,4 @@
-package com.tpi.admin.entities;
+package com.tpi.admin.backup.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

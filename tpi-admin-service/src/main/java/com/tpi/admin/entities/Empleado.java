@@ -1,6 +1,7 @@
 package com.tpi.admin.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tpi.admin.backup.entities.Prueba;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -81,7 +82,7 @@ public class Empleado {
         this.telefonoContacto = telefonoContacto;
     }
 
-    public List<Prueba> getPruebas() {
+    public List<com.tpi.admin.backup.entities.Prueba> getPruebas() {
         return pruebas;
     }
 

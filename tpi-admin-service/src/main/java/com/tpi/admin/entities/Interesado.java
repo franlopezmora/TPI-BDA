@@ -2,6 +2,7 @@ package com.tpi.admin.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tpi.admin.backup.entities.Prueba;
 import com.tpi.admin.utils.BooleanIntegerConverter;
 import jakarta.persistence.*;
 
