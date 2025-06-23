@@ -3,6 +3,8 @@ package com.tpi.admin.backup.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.tpi.admin.entities.Empleado;
+import com.tpi.admin.entities.Interesado;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
