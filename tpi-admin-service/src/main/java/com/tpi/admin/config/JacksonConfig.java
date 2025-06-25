@@ -1,6 +1,5 @@
 package com.tpi.admin.config;
 
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -18,14 +17,13 @@ public class JacksonConfig {
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jacksonCustomizer() {
         return builder -> {
-            // 1) instalar el módulo de java8 dates
+            // Instala el módulo de fechas Java 8
             builder.modulesToInstall(JavaTimeModule.class);
 
-            // 2) escribir fechas como ISO strings, no como timestamps
+            // Escribe fechas como ISO, no timestamps
             builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-            // 3) quitar el REQUIRE_HANDLERS_FOR_JAVA8_TIMES para que no falle
-            builder.featuresToDisable(MapperFeature.REQUIRE_HANDLERS_FOR_JAVA8_TIMES);
+            // NO PONGAS MapperFeature.REQUIRE_HANDLERS_FOR_JAVA8_TIMES (ya no existe)
         };
     }
 }
