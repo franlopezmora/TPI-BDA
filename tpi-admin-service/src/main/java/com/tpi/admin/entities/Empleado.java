@@ -1,10 +1,7 @@
 package com.tpi.admin.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tpi.admin.backup.entities.Prueba;
 import jakarta.persistence.*;
 
-import java.util.List;
 
 @Entity
 @Table(name= "Empleados")
@@ -24,19 +21,14 @@ public class Empleado {
     @Column(name = "TELEFONO_CONTACTO", nullable = false)
     private String telefonoContacto;
 
-    @OneToMany(mappedBy = "empleado")
-    @JsonIgnore
-    private List<Prueba> pruebas;
-
     public Empleado() {
     }
 
-    public Empleado(Long legajo, String nombre, String apellido, String telefonoContacto, List<Prueba> pruebas) {
+    public Empleado(Long legajo, String nombre, String apellido, String telefonoContacto) {
         this.legajo = legajo;
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefonoContacto = telefonoContacto;
-        this.pruebas = pruebas;
     }
 
     @Override
@@ -46,7 +38,6 @@ public class Empleado {
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
                 ", telefonoContacto='" + telefonoContacto + '\'' +
-                ", pruebas=" + pruebas +
                 '}';
     }
 
@@ -80,13 +71,5 @@ public class Empleado {
 
     public void setTelefonoContacto(String telefonoContacto) {
         this.telefonoContacto = telefonoContacto;
-    }
-
-    public List<com.tpi.admin.backup.entities.Prueba> getPruebas() {
-        return pruebas;
-    }
-
-    public void setPruebas(List<Prueba> pruebas) {
-        this.pruebas = pruebas;
     }
 }

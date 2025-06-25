@@ -1,5 +1,7 @@
 package com.tpi.admin.controllers;
 
+import com.tpi.admin.clients.PruebaClient;
+import com.tpi.admin.dtos.PruebaDTO;
 import com.tpi.admin.entities.Interesado;
 import com.tpi.admin.repositories.InteresadoRepository;
 import com.tpi.admin.services.InteresadoService;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/interesados")
@@ -20,6 +21,9 @@ public class InteresadoController {
     private InteresadoService interesadoService;
     @Autowired
     private InteresadoRepository interesadoRepository;
+    @Autowired
+    private PruebaClient pruebaClient;
+
 
     @GetMapping
     public List<Interesado> getAll() {
@@ -66,6 +70,11 @@ public class InteresadoController {
     @GetMapping("/restringidos")
     public List<Interesado> getRestringidos() {
         return interesadoService.listarRestringidos();
+    }
+
+    @GetMapping("/{legajo}/pruebas")
+    public List<PruebaDTO> obtenerPruebas(@PathVariable Long legajo) {
+        return pruebaClient.obtenerPruebasPorEmpleado(legajo);
     }
 
 }
