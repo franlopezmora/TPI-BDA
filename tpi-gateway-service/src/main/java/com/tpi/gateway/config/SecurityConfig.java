@@ -17,7 +17,7 @@ public class SecurityConfig {
                         .pathMatchers("/pruebas/**").hasRole("EMPLEADO")
                         .pathMatchers("/admin/**").hasRole("ADMIN")
                         .pathMatchers("/vehiculos/**").hasRole("USUARIO_VEHICULO")
-                        .pathMatchers("/reportes/**").hasAnyRole("ADMIN", "EMPLEADO")
+                        .pathMatchers("/reportes/**").hasAnyRole("ADMIN")
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt())
