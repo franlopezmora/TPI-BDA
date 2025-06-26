@@ -74,4 +74,10 @@ public class PruebaController {
                 .toList();
     }
 
+    @GetMapping("/vehiculo-en-prueba/{idVehiculo}")
+    public ResponseEntity<Boolean> vehiculoEnPrueba(@PathVariable Long idVehiculo) {
+        boolean estaEnPrueba = pruebaService.vehiculoEstaEnPrueba(idVehiculo);
+        return ResponseEntity.ok(estaEnPrueba);
+    }
+
 }

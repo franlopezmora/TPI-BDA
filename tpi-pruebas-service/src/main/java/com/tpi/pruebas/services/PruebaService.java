@@ -196,6 +196,10 @@ public class PruebaService {
         }
     }
 
+    public boolean vehiculoEstaEnPrueba(Long idVehiculo) {
+        return pruebaRepository.findByIdVehiculoAndFechaHoraFinIsNull(idVehiculo).isPresent();
+    }
+
     private double calcularDistancia(double lat1, double lon1, double lat2, double lon2) {
         double dx = lat1 - lat2;
         double dy = lon1 - lon2;
