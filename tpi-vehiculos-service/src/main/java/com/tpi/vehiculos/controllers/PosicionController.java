@@ -35,10 +35,16 @@ public class PosicionController {
     }
 
     @PostMapping
-    public ResponseEntity<PosicionDTO> crear(@RequestBody PosicionDTO dto) {
-        Posicion posicion = posicionService.fromDTO(dto, dto.getIdVehiculo());
-        Posicion guardada = posicionService.crear(posicion);
-        return ResponseEntity.ok(posicionService.toDTO(guardada));
+    public ResponseEntity<?> crear(@RequestBody PosicionDTO dto) {
+        try {
+            Posicion posicion = posicionService.fromDTO(dto, dto.getIdVehiculo());
+            Posicion guardada = posicionService.crear(posicion);
+            return ResponseEntity.ok(posicionService.toDTO(guardada));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage()); // Devuelve el mensaje al cliente (Postman)
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error interno del servidor");
+        }
     }
 
     @PutMapping("/{id}")
