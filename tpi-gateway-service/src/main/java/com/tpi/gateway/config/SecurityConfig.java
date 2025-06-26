@@ -18,7 +18,7 @@ public class SecurityConfig {
                         .pathMatchers("/notificaciones/**").hasAnyRole("ADMIN", "EMPLEADO")
                         .pathMatchers("/pruebas/**").hasRole("EMPLEADO")
                         .pathMatchers("/admin/**").hasRole("ADMIN")
-                        .pathMatchers("/vehiculos/**").hasRole("USUARIO_VEHICULO")
+                        .pathMatchers("/vehiculos/**").hasRole("VEHICULO")
                         .pathMatchers("/reportes/**").hasAnyRole("ADMIN")
                         .anyExchange().authenticated()
                 )
