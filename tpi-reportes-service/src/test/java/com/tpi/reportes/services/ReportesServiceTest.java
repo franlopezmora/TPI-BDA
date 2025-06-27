@@ -1,4 +1,3 @@
-// src/main/java/com/tpi/reportes/services/ReportesServiceTest.java
 package com.tpi.reportes.services;
 
 import com.tpi.reportes.clients.PosicionesClient;
@@ -6,84 +5,115 @@ import com.tpi.reportes.clients.PruebasClient;
 import com.tpi.reportes.dtos.IncidenteDTO;
 import com.tpi.reportes.dtos.PosicionDTO;
 import com.tpi.reportes.dtos.PruebaDTO;
-import org.springframework.stereotype.Service;
+import com.tpi.reportes.dtos.VehiculoDTO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Service
-public class ReportesServiceTest {
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-    private final PruebasClient pruebasClient;
-    private final PosicionesClient posicionesClient;
+class ReportesServiceTest {
 
-    public ReportesServiceTest (PruebasClient pruebasClient,
-                                PosicionesClient posicionesClient) {
-        this.pruebasClient = pruebasClient;
-        this.posicionesClient = posicionesClient;
+    private PruebasClient pruebasClient;
+    private PosicionesClient posicionesClient;
+    private ReportesService reportesService;
+
+    @BeforeEach
+    void setUp() {
+        pruebasClient = mock(PruebasClient.class);
+        posicionesClient = mock(PosicionesClient.class);
+        reportesService = new ReportesService(posicionesClient, pruebasClient);
     }
 
-    public List<IncidenteDTO> obtenerIncidentes() {
-        return pruebasClient.obtenerTodosIncidentes();
+    @Test
+    void testObtenerIncidentes() {
+        IncidenteDTO incidente1 = new IncidenteDTO();
+        IncidenteDTO incidente2 = new IncidenteDTO();
+        when(pruebasClient.obtenerTodosIncidentes()).thenReturn(Arrays.asList(incidente1, incidente2));
+
+        List<IncidenteDTO> result = reportesService.obtenerIncidentes();
+
+        assertEquals(2, result.size());
+        verify(pruebasClient, times(1)).obtenerTodosIncidentes();
     }
 
-    public List<IncidenteDTO> obtenerIncidentesPorEmpleado(Long legajo) {
-        return pruebasClient.obtenerTodosIncidentes().stream()
-                .filter(i -> i.getLegajoEmpleado() != null
-                        && i.getLegajoEmpleado().equals(legajo))
-                .collect(Collectors.toList());
+    @Test
+    void testObtenerIncidentesPorEmpleado() {
+        IncidenteDTO incidente1 = new IncidenteDTO();
+        incidente1.setLegajoEmpleado(100L);
+        IncidenteDTO incidente2 = new IncidenteDTO();
+        incidente2.setLegajoEmpleado(200L);
+        IncidenteDTO incidente3 = new IncidenteDTO();
+        incidente3.setLegajoEmpleado(100L);
+
+        when(pruebasClient.obtenerTodosIncidentes())
+                .thenReturn(Arrays.asList(incidente1, incidente2, incidente3));
+
+        List<IncidenteDTO> result = reportesService.obtenerIncidentesPorEmpleado(100L);
+
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(i -> i.getLegajoEmpleado().equals(100L)));
     }
 
-    public double calcularKilometrosRecorridos(Long idVehiculo,
-                                               String desdeStr,
-                                               String hastaStr) {
-        LocalDateTime desde = LocalDateTime.parse(desdeStr);
-        LocalDateTime hasta = LocalDateTime.parse(hastaStr);
+    @Test
+    void testCalcularKilometrosRecorridos() {
+        PosicionDTO p1 = new PosicionDTO();
+        p1.setIdVehiculo(10L);
+        p1.setFechaHora(LocalDateTime.of(2024, 6, 1, 10, 0));
+        p1.setLatitud(0);
+        p1.setLongitud(0);
 
-        List<PosicionDTO> filtradas = posicionesClient.obtenerTodas().stream()
-                .filter(p -> p.getIdVehiculo() != null
-                        && p.getIdVehiculo().equals(idVehiculo))
-                .filter(p -> !p.getFechaHora().isBefore(desde)
-                        && !p.getFechaHora().isAfter(hasta))
-                .sorted(Comparator.comparing(PosicionDTO::getFechaHora))
-                .collect(Collectors.toList());
+        PosicionDTO p2 = new PosicionDTO();
+        p2.setIdVehiculo(10L);
+        p2.setFechaHora(LocalDateTime.of(2024, 6, 1, 11, 0));
+        p2.setLatitud(0);
+        p2.setLongitud(1);
 
-        if (filtradas.size() < 2) {
-            return 0.0;
-        }
+        when(posicionesClient.obtenerTodas()).thenReturn(Arrays.asList(p1, p2));
 
-        double total = 0;
-        PosicionDTO prev = filtradas.get(0);
-        for (int i = 1; i < filtradas.size(); i++) {
-            PosicionDTO curr = filtradas.get(i);
-            total += distanciaKm(
-                    prev.getLatitud(), prev.getLongitud(),
-                    curr.getLatitud(), curr.getLongitud()
-            );
-            prev = curr;
-        }
-        return total;
+        double km = reportesService.calcularKilometrosRecorridos(10L,
+                "2024-06-01T09:00:00", "2024-06-01T12:00:00");
+
+        assertTrue(km > 100 && km < 112, "La distancia debe ser cercana a 111km, es: " + km);
     }
 
-    private double distanciaKm(double lat1, double lon1,
-                               double lat2, double lon2) {
-        final int R = 6_371; // radio terrestre en km
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2)
-                + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2))
-                * Math.sin(dLon/2) * Math.sin(dLon/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
+    @Test
+    void testCalcularKilometrosRecorridosSinDatos() {
+        when(posicionesClient.obtenerTodas()).thenReturn(Collections.emptyList());
+
+        double km = reportesService.calcularKilometrosRecorridos(10L,
+                "2024-06-01T09:00:00", "2024-06-01T12:00:00");
+
+        assertEquals(0.0, km, "Si no hay posiciones, la distancia debe ser cero");
     }
 
-    public List<PruebaDTO> obtenerPruebasPorVehiculo(Long idVehiculo) {
-        return pruebasClient.obtenerTodas().stream()
-                .filter(r -> r.getVehiculo() != null
-                        && r.getVehiculo().getId().equals(idVehiculo))
-                .collect(Collectors.toList());
+    @Test
+    void testObtenerPruebasPorVehiculo() {
+        PruebaDTO prueba1 = new PruebaDTO();
+        VehiculoDTO v1 = new VehiculoDTO();
+        v1.setId(15L);
+        prueba1.setVehiculo(v1);
+
+        PruebaDTO prueba2 = new PruebaDTO();
+        VehiculoDTO v2 = new VehiculoDTO();
+        v2.setId(25L);
+        prueba2.setVehiculo(v2);
+
+        PruebaDTO prueba3 = new PruebaDTO();
+        VehiculoDTO v3 = new VehiculoDTO();
+        v3.setId(15L);
+        prueba3.setVehiculo(v3);
+
+        when(pruebasClient.obtenerTodas()).thenReturn(Arrays.asList(prueba1, prueba2, prueba3));
+
+        List<PruebaDTO> result = reportesService.obtenerPruebasPorVehiculo(15L);
+
+        assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(r -> r.getVehiculo().getId().equals(15L)));
     }
 }
