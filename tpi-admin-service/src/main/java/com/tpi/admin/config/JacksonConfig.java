@@ -25,7 +25,6 @@ public class JacksonConfig {
             builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
             // 3) quitar el REQUIRE_HANDLERS_FOR_JAVA8_TIMES para que no falle
-            builder.featuresToDisable(MapperFeature.REQUIRE_HANDLERS_FOR_JAVA8_TIMES);
         };
     }
 }

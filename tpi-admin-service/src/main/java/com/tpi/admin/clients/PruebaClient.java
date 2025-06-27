@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "tpi-pruebas-service", url = "${url.pruebas-service}")
+@FeignClient(name = "tpi-pruebas-service", url = "${services.pruebas.url}")
 public interface PruebaClient {
     @GetMapping("/pruebas/empleado/{legajo}")
     List<PruebaDTO> obtenerPruebasPorEmpleado(@PathVariable("legajo") Long legajo);
