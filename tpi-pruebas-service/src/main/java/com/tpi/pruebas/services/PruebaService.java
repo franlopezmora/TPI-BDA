@@ -55,11 +55,6 @@ public class PruebaService {
            throw  new IllegalArgumentException("La licencia del interesado está vencida");
         }
 
-        //FALTA VALIDAR EL VEHÍCULO.
-        //VehiculoDto vehiculo = vehiculoClient.obtenerVehiculo(prueba.getVehiculo().getId().LongValue());
-        // if (vehiculo.getEnPrueba() != null && vehiculo.getEnprueba()){
-        // throw new IllegalArgumentException("El vehiculo ya se encuentra en prueba")}
-
         // Validar si el vehículo está en una prueba activa
         if (pruebaRepository.findByIdVehiculoAndFechaHoraFinIsNull(prueba.getIdVehiculo()).isPresent()) {
             throw new IllegalArgumentException("El vehículo ya se encuentra en una prueba activa.");
@@ -199,6 +194,10 @@ public class PruebaService {
 
             notificacionClient.enviarNotificacion(notif);
         }
+    }
+
+    public boolean vehiculoEstaEnPrueba(Long idVehiculo) {
+        return pruebaRepository.findByIdVehiculoAndFechaHoraFinIsNull(idVehiculo).isPresent();
     }
 
     private double calcularDistancia(double lat1, double lon1, double lat2, double lon2) {
