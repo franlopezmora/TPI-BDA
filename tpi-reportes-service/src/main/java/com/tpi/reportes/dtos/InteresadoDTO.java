@@ -8,7 +8,16 @@ public class InteresadoDTO {
     private String apellido;
     private Boolean restringido;
     private LocalDate fechaVencimientoLicencia;
+    private Long documento;
     // Getters y setters
+
+    public Long getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(Long documento) {
+        this.documento = documento;
+    }
 
     public Long getId() {
         return id;

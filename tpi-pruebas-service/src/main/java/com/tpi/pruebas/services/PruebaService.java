@@ -164,6 +164,12 @@ public class PruebaService {
 
         boolean fueraDeRadio = distancia > config.getRadioMaximoMetros();
 
+        if (distancia <= 0.0001) { // tolerancia, puede ajustarse según unidad
+            prueba.setFechaHoraFin(dto.getFechaHora());
+            pruebaRepository.save(prueba);
+            return;
+        }
+
         // 5. Validar si está en una zona peligrosa
         boolean enZonaPeligrosa = config.getZonasPeligrosas().stream().anyMatch(zona -> {
             double distanciaZona = calcularDistancia(
