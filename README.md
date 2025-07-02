@@ -11,7 +11,10 @@ El proyecto está organizado en 4 microservicios:
 | `tpi-admin-service`   | Gestión de pruebas, interesados, empleados y zonas peligrosas               |
 | `tpi-reportes-service`| Generación de reportes y estadísticas del sistema                           |
 | `tpi-vehiculos-service`| Administración de vehículos y sus relaciones                               |
-| `tpi-gateway-service` | API Gateway (Spring Cloud Gateway) para enrutar las peticiones entrantes   |
+| `tpi-gateway-service` | API Gateway (Spring Cloud Gateway) para enrutar las peticiones entrantes    |
+| `tpi-pruebas-service` | Microservicio de gestion de pruebas de manejo                               |
+| `tpi-notificaciones-service` | Gestiona las notificaciones via Discord, utilizado webhook           |
+
 
 ## 🐘 Base de Datos
 
@@ -92,13 +95,15 @@ Una vez levantado el sistema, podés probar los endpoints desde el **API Gateway
 ```
 TPI-Backend/
 │
-├── db/                    # Dump SQL de la base PostgreSQL
-├── docker-compose.yml     # Levanta el contenedor de PostgreSQL
-├── build-all.sh           # Script para compilar y levantar todo automáticamente
-├── tpi-admin-service/     # Microservicio de gestión general
-├── tpi-reportes-service/  # Microservicio de reportes
-├── tpi-vehiculos-service/ # Microservicio de vehículos
-├── tpi-gateway-service/   # API Gateway
+├── db/                         # Dump SQL de la base PostgreSQL
+├── docker-compose.yml          # Levanta el contenedor de PostgreSQL
+├── build-all.sh                # Script para compilar y levantar todo automáticamente
+├── tpi-admin-service/          # Microservicio de gestión general
+├── tpi-reportes-service/       # Microservicio de reportes
+├── tpi-vehiculos-service/      # Microservicio de vehículos
+├── tpi-pruebas-service/        # Microservicio de pruebas
+├── tpi-notificaciones-service/ # Microservicio de notificaciones
+├── tpi-gateway-service/        # API Gateway
 ```
 
 ## 🛡 Seguridad
