@@ -1,12 +1,8 @@
 package com.tpi.admin.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tpi.admin.utils.BooleanIntegerConverter;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "Interesados")
@@ -40,14 +36,10 @@ public class Interesado {
     @Column(name = "FECHA_VENCIMIENTO_LICENCIA")
     private LocalDate fechaVencimientoLicencia;
 
-    @OneToMany(mappedBy = "interesado")
-    @JsonIgnore
-    private List<Prueba> pruebas;
-
     public Interesado() {
     }
 
-    public Interesado(Long id, String tipoDocumento, String documento, String nombre, String apellido, Boolean restringido, Integer nroLicencia, LocalDate fechaVencimientoLicencia, List<Prueba> pruebas) {
+    public Interesado(Long id, String tipoDocumento, String documento, String nombre, String apellido, Boolean restringido, Integer nroLicencia, LocalDate fechaVencimientoLicencia) {
         this.id = id;
         this.tipoDocumento = tipoDocumento;
         this.documento = documento;
@@ -56,7 +48,6 @@ public class Interesado {
         this.restringido = restringido;
         this.nroLicencia = nroLicencia;
         this.fechaVencimientoLicencia = fechaVencimientoLicencia;
-        this.pruebas = pruebas;
     }
 
     @Override
@@ -70,7 +61,6 @@ public class Interesado {
                 ", restringido=" + restringido +
                 ", nroLicencia=" + nroLicencia +
                 ", fechaVencimientoLicencia=" + fechaVencimientoLicencia +
-                ", pruebas=" + pruebas +
                 '}';
     }
 
@@ -136,13 +126,5 @@ public class Interesado {
 
     public void setFechaVencimientoLicencia(LocalDate fechaVencimientoLicencia) {
         this.fechaVencimientoLicencia = fechaVencimientoLicencia;
-    }
-
-    public List<Prueba> getPruebas() {
-        return pruebas;
-    }
-
-    public void setPruebas(List<Prueba> pruebas) {
-        this.pruebas = pruebas;
     }
 }

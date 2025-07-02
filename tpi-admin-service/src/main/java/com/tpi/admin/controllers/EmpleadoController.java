@@ -1,5 +1,7 @@
 package com.tpi.admin.controllers;
 
+import com.tpi.admin.clients.PruebaClient;
+import com.tpi.admin.dtos.PruebaDTO;
 import com.tpi.admin.entities.Empleado;
 import com.tpi.admin.services.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ public class EmpleadoController {
 
     @Autowired
     private EmpleadoService empleadoService;
+    @Autowired
+    private PruebaClient pruebaClient;
+
 
     @GetMapping
     public List<Empleado> getAll() {
@@ -46,5 +51,10 @@ public class EmpleadoController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         empleadoService.eliminarEmpleado(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{legajo}/pruebas")
+    public List<PruebaDTO> obtenerPruebas(@PathVariable Long legajo) {
+        return pruebaClient.obtenerPruebasPorEmpleado(legajo);
     }
 }

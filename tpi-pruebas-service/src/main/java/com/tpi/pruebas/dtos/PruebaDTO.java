@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 public class PruebaDTO {
     private Long id;
+
     private LocalDateTime fechaHoraInicio;
     private LocalDateTime fechaHoraFin;
     private String comentario;
