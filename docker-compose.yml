@@ -2,20 +2,65 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:16
+    image: postgres:15
     container_name: tpi-postgres
-    ports:
-      - "5432:5432"
+    restart: always
     environment:
       POSTGRES_DB: tpi
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
       - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - tpi-network
+    ports:
+      - "5432:5432"
 
-networks:
-  tpi-network:
-    driver: bridge
+  admin-service:
+    build: ./tpi-admin-service
+    container_name: tpi-admin-service
+    depends_on:
+      - postgres
+    ports:
+      - "8081:8081"
 
+  vehiculos-service:
+    build: ./tpi-vehiculos-service
+    container_name: tpi-vehiculos-service
+    depends_on:
+      - postgres
+    ports:
+      - "8082:8082"
+
+  reportes-service:
+    build: ./tpi-reportes-service
+    container_name: tpi-reportes-service
+    depends_on:
+      - postgres
+    ports:
+      - "8083:8083"
+      
+  notificaciones-service:
+    build: ./tpi-notificaciones-service
+    container_name: tpi-notificaciones-service
+    depends_on:
+      - postgres
+    ports:
+      - "8084:8084"
+
+  pruebas-service:
+    build: ./tpi-pruebas-service
+    container_name: tpi-pruebas-service
+    depends_on:
+      - postgres
+    ports:
+      - "8085:8085"
+
+  gateway:
+    build: ./tpi-gateway-service
+    container_name: tpi-gateway
+    depends_on:
+      - admin-service
+      - vehiculos-service
+      - reportes-service
+      - notificaciones-service 
+    ports:
+      - "8080:8080"

@@ -11,7 +11,10 @@ El proyecto está organizado en 4 microservicios:
 | `tpi-admin-service`   | Gestión de pruebas, interesados, empleados y zonas peligrosas               |
 | `tpi-reportes-service`| Generación de reportes y estadísticas del sistema                           |
 | `tpi-vehiculos-service`| Administración de vehículos y sus relaciones                               |
-| `tpi-gateway-service` | API Gateway (Spring Cloud Gateway) para enrutar las peticiones entrantes   |
+| `tpi-gateway-service` | API Gateway (Spring Cloud Gateway) para enrutar las peticiones entrantes    |
+| `tpi-pruebas-service` | Microservicio de gestion de pruebas de manejo                               |
+| `tpi-notificaciones-service` | Gestiona las notificaciones via Discord, utilizado webhook           |
+
 
 ## 🐘 Base de Datos
 
@@ -27,44 +30,80 @@ El proyecto está organizado en 4 microservicios:
 - Maven
 - Docker + Docker Compose
 
-### Levantar la base de datos
+### Ejecución rápida del proyecto
+
+#### 1. Clonar el proyecto
 
 ```bash
-docker-compose up -d
+git clone https://github.com/tuusuario/TPI-Backend.git
+cd TPI-Backend
 ```
 
-Esto iniciará un contenedor PostgreSQL y cargará el esquema automáticamente desde el dump.
+#### 2. Ejecutar todo automáticamente
 
-### Ejecutar los microservicios
-
-Desde terminal o IntelliJ:
+Este proyecto cuenta con un script que construye todos los microservicios y levanta la base de datos y los contenedores:
 
 ```bash
-cd tpi-admin-service
-mvn spring-boot:run
+./build-all.sh
+docker-compose up --build
 ```
 
-Repetir para cada microservicio. El Gateway se ejecuta en `http://localhost:8080`.
+Este comando:
 
-### Ejemplo de uso
+✅ Compila todos los microservicios (`admin`, `vehiculos`, `reportes`, `gateway`)  
+✅ Construye las imágenes Docker  
+✅ Levanta el contenedor de PostgreSQL  
+✅ Inicia todos los servicios juntos
 
-```http
-GET http://localhost:8080/admin/hello
+> 💡 Si usás Windows, asegurate de tener Git Bash o WSL para ejecutar el `.sh`. Si no, podés correr los comandos manualmente desde el archivo.
+
+
+#### 3. Resetear el entorno desde cero (base limpia)
+
+Si querés forzar que se ejecute de nuevo el init.sql (por ejemplo, para reiniciar la base), usá:
+
+```bash
+docker-compose down -v
+./build-all.sh
+docker-compose up --build
 ```
 
-Este request será redirigido por el gateway al microservicio correspondiente (`admin-service`).
+Esto borra los volúmenes (incluida la base de datos) y vuelve a levantar todo desde cero.
+
+### Acceso a los servicios
+
+Una vez levantado el sistema, podés probar los endpoints desde el **API Gateway** (localhost:8080):
+
+| Método | Endpoint                | Descripción                    |
+|--------|-------------------------|--------------------------------|
+| GET    | `/admin/hello`          | Test de disponibilidad         |
+| GET    | `/vehiculos/hello`      | Test de disponibilidad         |
+| GE     | `/reportes/hello`       | Test de disponibilidad         |
+| GET    | `/admin/empleados`      | Listado de empleados           |
+| POST   | `/admin/empleados`      | Alta de empleado               |
+| GET    | `/admin/interesados`    | Listado de interesados         |
+| POST   | `/admin/interesados`    | Alta de interesado             |
+| GET    | `/admin/pruebas`        | Listado de pruebas             |
+| POST   | `/admin/pruebas`        | Alta de prueba                 |
+| GET    | `/admin/notificaciones` | Listado de notificaciones (OK) |
+| POST   | `/admin/notificaciones` | Alta de notificación           |
+
+
 
 ## 📁 Estructura del proyecto
 
 ```
 TPI-Backend/
 │
-├── db/                    # Dump SQL de la base PostgreSQL
-├── docker-compose.yml     # Levanta el contenedor de PostgreSQL
-├── tpi-admin-service/     # Microservicio de gestión general
-├── tpi-reportes-service/  # Microservicio de reportes
-├── tpi-vehiculos-service/ # Microservicio de vehículos
-├── tpi-gateway-service/   # API Gateway
+├── db/                         # Dump SQL de la base PostgreSQL
+├── docker-compose.yml          # Levanta el contenedor de PostgreSQL
+├── build-all.sh                # Script para compilar y levantar todo automáticamente
+├── tpi-admin-service/          # Microservicio de gestión general
+├── tpi-reportes-service/       # Microservicio de reportes
+├── tpi-vehiculos-service/      # Microservicio de vehículos
+├── tpi-pruebas-service/        # Microservicio de pruebas
+├── tpi-notificaciones-service/ # Microservicio de notificaciones
+├── tpi-gateway-service/        # API Gateway
 ```
 
 ## 🛡 Seguridad
