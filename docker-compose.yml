@@ -64,3 +64,13 @@ services:
       - notificaciones-service 
     ports:
       - "8080:8080"
+
+  frontend:
+    build: ./tpi-frontend
+    container_name: tpi-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - admin-service
+      - vehiculos-service
+      - reportes-service
