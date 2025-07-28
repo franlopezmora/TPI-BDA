@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:15
     container_name: tpi-postgres
-    restart: always
+    restart: no
     environment:
       POSTGRES_DB: tpi
       POSTGRES_USER: postgres
