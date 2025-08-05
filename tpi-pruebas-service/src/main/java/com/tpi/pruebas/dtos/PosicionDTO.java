@@ -1,9 +1,13 @@
 package com.tpi.pruebas.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 
 public class PosicionDTO {
     private Long id;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime fechaHora;
     private Double latitud;
     private Double longitud;

@@ -15,7 +15,9 @@ services:
       - "5432:5432"
 
   admin-service:
-    build: ./tpi-admin-service
+    build:
+      context: .
+      dockerfile: tpi-admin-service/Dockerfile
     container_name: tpi-admin-service
     depends_on:
       - postgres
@@ -23,7 +25,9 @@ services:
       - "8081:8081"
 
   vehiculos-service:
-    build: ./tpi-vehiculos-service
+    build:
+      context: .
+      dockerfile: tpi-vehiculos-service/Dockerfile
     container_name: tpi-vehiculos-service
     depends_on:
       - postgres
@@ -31,7 +35,9 @@ services:
       - "8082:8082"
 
   reportes-service:
-    build: ./tpi-reportes-service
+    build:
+      context: .
+      dockerfile: tpi-reportes-service/Dockerfile
     container_name: tpi-reportes-service
     depends_on:
       - postgres
@@ -39,7 +45,9 @@ services:
       - "8083:8083"
       
   notificaciones-service:
-    build: ./tpi-notificaciones-service
+    build:
+      context: .
+      dockerfile: tpi-notificaciones-service/Dockerfile
     container_name: tpi-notificaciones-service
     depends_on:
       - postgres
@@ -47,7 +55,9 @@ services:
       - "8084:8084"
 
   pruebas-service:
-    build: ./tpi-pruebas-service
+    build:
+      context: .
+      dockerfile: tpi-pruebas-service/Dockerfile
     container_name: tpi-pruebas-service
     depends_on:
       - postgres
@@ -55,7 +65,9 @@ services:
       - "8085:8085"
 
   gateway:
-    build: ./tpi-gateway-service
+    build:
+      context: .
+      dockerfile: tpi-gateway-service/Dockerfile
     container_name: tpi-gateway
     depends_on:
       - admin-service
@@ -66,7 +78,9 @@ services:
       - "8080:8080"
 
   frontend:
-    build: ./tpi-frontend
+    build:
+      context: .
+      dockerfile: tpi-frontend/Dockerfile
     container_name: tpi-frontend
     ports:
       - "3000:3000"

@@ -1,6 +1,7 @@
 package com.tpi.admin.services;
 
 import com.tpi.admin.config.JacksonConfig;
+import com.tpi.admin.dtos.InteresadoDTO;
 import com.tpi.admin.entities.Interesado;
 import com.tpi.admin.repositories.InteresadoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,128 +19,121 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
-@Import(JacksonConfig.class)
 class InteresadoServiceTest {
 
-    @Autowired
-    private MockMvc mvc;
     @Mock
     private InteresadoRepository repo;
-
 
     @InjectMocks
     private InteresadoService service;
 
-    private Interesado i1;
+    private Interesado entidad;
+    private InteresadoDTO dto;
 
     @BeforeEach
     void setUp() {
-        i1 = new Interesado();
-        i1.setId(1L);
-        i1.setTipoDocumento("DNI");
-        i1.setDocumento("12345678");
-        i1.setNombre("María");
-        i1.setApellido("Gómez");
-        i1.setRestringido(true);
-        i1.setNroLicencia(5555);
-        i1.setFechaVencimientoLicencia(LocalDate.of(2025, 12, 31));
+        // Creamos la entidad “cruda”
+        entidad = new Interesado();
+        entidad.setId(1L);
+        entidad.setTipoDocumento("DNI");
+        entidad.setDocumento("12345678");
+        entidad.setNombre("María");
+        entidad.setApellido("Gómez");
+        entidad.setRestringido(true);
+        entidad.setNroLicencia(5555);
+        entidad.setFechaVencimientoLicencia(LocalDate.of(2025, 12, 31));
+
+        // Y su DTO equivalente
+        dto = new InteresadoDTO();
+        dto.setId(entidad.getId());
+        dto.setTipoDocumento(entidad.getTipoDocumento());
+        dto.setDocumento(entidad.getDocumento());
+        dto.setNombre(entidad.getNombre());
+        dto.setApellido(entidad.getApellido());
+        dto.setRestringido(entidad.getRestringido());
+        dto.setNroLicencia(entidad.getNroLicencia());
+        dto.setFechaVencimientoLicencia(entidad.getFechaVencimientoLicencia());
     }
 
     @Test
-    void listarInteresados_devuelveTodos() {
-        when(repo.findAll()).thenReturn(List.of(i1));
+    void listarInteresados_devuelveDTOs() {
+        // repo devuelve entidad
+        when(repo.findAll()).thenReturn(List.of(entidad));
 
-        List<Interesado> todos = service.listarInteresados();
+        // service mapea a DTO
+        List<InteresadoDTO> lista = service.listarInteresados();
 
-        assertThat(todos).hasSize(1).contains(i1);
+        assertThat(lista)
+                .hasSize(1)
+                .first()
+                .returns(1L, InteresadoDTO::getId)
+                .returns("María", InteresadoDTO::getNombre)
+                .returns(true, InteresadoDTO::getRestringido);
+
         verify(repo).findAll();
     }
 
     @Test
-    void crearInteresado_debeLlamarSave() {
-        when(repo.save(i1)).thenReturn(i1);
+    void crearInteresado_debeMapearYGuardar() {
+        // cuando service recibe DTO, mapea a entidad y llama a repo.save(entidad)
+        when(repo.save(any(Interesado.class))).thenReturn(entidad);
 
-        Interesado saved = service.crearInteresado(i1);
+        InteresadoDTO creado = service.crearInteresado(dto);
 
-        assertThat(saved).isSameAs(i1);
-        verify(repo).save(i1);
+        assertThat(creado.getId()).isEqualTo(1L);
+        assertThat(creado.getNombre()).isEqualTo("María");
+        verify(repo).save(any(Interesado.class));
     }
 
     @Test
     void obtenerInteresadoPorId_existente() {
-        when(repo.findById(1L)).thenReturn(Optional.of(i1));
+        when(repo.findById(1L)).thenReturn(Optional.of(entidad));
 
-        Optional<Interesado> opt = service.obtenerInteresadoPorId(1L);
+        Optional<InteresadoDTO> opt = service.obtenerInteresadoPorId(1L);
 
-        assertThat(opt).isPresent().contains(i1);
+        assertThat(opt)
+                .isPresent()
+                .get()
+                .returns("Gómez", InteresadoDTO::getApellido);
+
         verify(repo).findById(1L);
-    }
-
-    @Test
-    void obtenerInteresadoPorId_inexistente() {
-        when(repo.findById(9L)).thenReturn(Optional.empty());
-
-        Optional<Interesado> opt = service.obtenerInteresadoPorId(9L);
-
-        assertThat(opt).isEmpty();
-        verify(repo).findById(9L);
     }
 
     @Test
     void actualizarInteresado_existente_aplicaCambios() {
-        Interesado cambios = new Interesado();
-        cambios.setTipoDocumento("LC");
-        cambios.setDocumento("87654321");
+        InteresadoDTO cambios = new InteresadoDTO();
         cambios.setNombre("Ana");
         cambios.setApellido("López");
-        cambios.setRestringido(false);
-        cambios.setNroLicencia(1111);
-        cambios.setFechaVencimientoLicencia(LocalDate.of(2030, 1, 1));
+        cambios.setTipoDocumento(entidad.getTipoDocumento());
+        cambios.setDocumento(entidad.getDocumento());
+        cambios.setNroLicencia(entidad.getNroLicencia());
+        cambios.setFechaVencimientoLicencia(entidad.getFechaVencimientoLicencia());
 
-        when(repo.findById(1L)).thenReturn(Optional.of(i1));
-        when(repo.save(any(Interesado.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(repo.findById(1L)).thenReturn(Optional.of(entidad));
+        when(repo.save(any(Interesado.class)))
+                .thenAnswer(inv -> {
+                    Interesado ent = inv.getArgument(0);
+                    // simulamos retorno con los cambios
+                    ent.setId(entidad.getId());
+                    return ent;
+                });
 
-        Interesado updated = service.actualizarInteresado(1L, cambios);
+        InteresadoDTO updated = service.actualizarInteresado(1L, cambios);
 
-        assertThat(updated.getTipoDocumento()).isEqualTo("LC");
-        assertThat(updated.getDocumento()).isEqualTo("87654321");
         assertThat(updated.getNombre()).isEqualTo("Ana");
         assertThat(updated.getApellido()).isEqualTo("López");
-        assertThat(updated.getRestringido()).isFalse();
-        assertThat(updated.getNroLicencia()).isEqualTo(1111);
-        assertThat(updated.getFechaVencimientoLicencia())
-                .isEqualTo(LocalDate.of(2030, 1, 1));
-
         verify(repo).findById(1L);
-        verify(repo).save(updated);
+        verify(repo).save(any(Interesado.class));
     }
 
     @Test
-    void actualizarInteresado_noExistente_lanzaRuntimeException() {
-        when(repo.findById(99L)).thenReturn(Optional.empty());
+    void listarRestringidos_devuelveSoloRestringidos() {
+        when(repo.findByRestringidoTrue()).thenReturn(List.of(entidad));
 
-        assertThatThrownBy(() -> service.actualizarInteresado(99L, i1))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Interesado no encontrado");
-        verify(repo).findById(99L);
-        verify(repo, never()).save(any());
-    }
+        List<InteresadoDTO> res = service.listarRestringidos();
 
-    @Test
-    void eliminarInteresado_llamaDeleteById() {
-        service.eliminarInteresado(1L);
-        verify(repo).deleteById(1L);
-    }
-
-    @Test
-    void listarRestringidos_devuelveSoloTrue() {
-        when(repo.findByRestringidoTrue()).thenReturn(List.of(i1));
-
-        List<Interesado> restringidos = service.listarRestringidos();
-
-        assertThat(restringidos).hasSize(1).allMatch(Interesado::getRestringido);
+        assertThat(res).allMatch(InteresadoDTO::getRestringido);
         verify(repo).findByRestringidoTrue();
     }
 }

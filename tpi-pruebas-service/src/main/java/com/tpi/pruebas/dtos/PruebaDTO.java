@@ -3,13 +3,16 @@ import com.tpi.pruebas.clients.VehiculoClient;
 import com.tpi.pruebas.dtos.EmpleadoDTO;
 import com.tpi.pruebas.dtos.InteresadoDTO;
 import com.tpi.pruebas.dtos.VehiculoDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
 public class PruebaDTO {
     private Long id;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime fechaHoraInicio;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime fechaHoraFin;
     private String comentario;
 

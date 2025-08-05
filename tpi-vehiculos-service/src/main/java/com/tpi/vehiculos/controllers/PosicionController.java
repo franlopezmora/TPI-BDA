@@ -1,6 +1,8 @@
 package com.tpi.vehiculos.controllers;
 
+import com.tpi.vehiculos.clients.PruebaClient;
 import com.tpi.vehiculos.dtos.PosicionDTO;
+import com.tpi.vehiculos.dtos.PruebaDTO;
 import com.tpi.vehiculos.entities.Posicion;
 import com.tpi.vehiculos.services.PosicionService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,15 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/posiciones")
 public class PosicionController {
-
+    private final PruebaClient pruebaClient;
     private final PosicionService posicionService;
 
-    public PosicionController(PosicionService posicionService) {
+    public PosicionController(PruebaClient pruebaClient, PosicionService posicionService) {
+        this.pruebaClient = pruebaClient;
         this.posicionService = posicionService;
     }
 
@@ -37,13 +41,51 @@ public class PosicionController {
     @PostMapping
     public ResponseEntity<?> crear(@RequestBody PosicionDTO dto) {
         try {
-            Posicion posicion = posicionService.fromDTO(dto, dto.getIdVehiculo());
-            Posicion guardada = posicionService.crear(posicion);
+            // 1) Verifico que esté en prueba activa
+            if (!pruebaClient.vehiculoEstaEnPrueba(dto.getIdVehiculo())) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("El vehículo no está en una prueba activa");
+            }
+
+            // 2) Traigo todas las pruebas activas y filtro por este vehículo
+            List<PruebaDTO> activas = pruebaClient.listarPruebasActivas();
+            Optional<PruebaDTO> pruebaOpt = activas.stream()
+                    .filter(p -> p.getIdVehiculo().equals(dto.getIdVehiculo()))
+                    .findFirst();
+
+            if (pruebaOpt.isEmpty()) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("No se encontró la prueba activa para este vehículo");
+            }
+
+            PruebaDTO prueba = pruebaOpt.get();
+            LocalDateTime ahora = LocalDateTime.now();
+
+            // 3) Impido posiciones anteriores al inicio de la prueba
+            if (ahora.isBefore(prueba.getFechaHoraInicio())) {
+                return ResponseEntity
+                        .badRequest()
+                        .body("No se puede registrar posición antes del inicio de la prueba");
+            }
+
+            // 4) Armo la entidad y fuerzo la fecha actual
+            Posicion entidad = posicionService.fromDTO(dto, dto.getIdVehiculo());
+            entidad.setFechaHora(ahora);
+
+            // 5) Persisto y devuelvo
+            Posicion guardada = posicionService.crear(entidad);
             return ResponseEntity.ok(posicionService.toDTO(guardada));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage()); // Devuelve el mensaje al cliente (Postman)
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error interno del servidor");
+
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .status(500)
+                    .body("Error interno del servidor");
         }
     }
 

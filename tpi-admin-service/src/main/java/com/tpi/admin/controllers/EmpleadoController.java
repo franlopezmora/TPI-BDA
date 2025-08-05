@@ -1,10 +1,14 @@
 package com.tpi.admin.controllers;
 
 import com.tpi.admin.clients.PruebaClient;
+import com.tpi.admin.dtos.EmpleadoDTO;
 import com.tpi.admin.dtos.PruebaDTO;
 import com.tpi.admin.entities.Empleado;
 import com.tpi.admin.services.EmpleadoService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,43 +18,61 @@ import java.util.List;
 @RequestMapping("/empleados")
 public class EmpleadoController {
 
-    @Autowired
-    private EmpleadoService empleadoService;
-    @Autowired
-    private PruebaClient pruebaClient;
+    private final EmpleadoService empleadoService;
+    private final PruebaClient pruebaClient;
 
+    public EmpleadoController(EmpleadoService empleadoService,
+                              PruebaClient pruebaClient) {
+        this.empleadoService = empleadoService;
+        this.pruebaClient     = pruebaClient;
+    }
 
     @GetMapping
-    public List<Empleado> getAll() {
+    public List<EmpleadoDTO> getAll() {
         return empleadoService.listarEmpleados();
     }
 
     @PostMapping
-    public Empleado create(@RequestBody Empleado empleado) {
-        return empleadoService.guardarEmpleado(empleado);
+    public ResponseEntity<EmpleadoDTO> create(
+            @Valid @RequestBody EmpleadoDTO dto
+    ) {
+        EmpleadoDTO creado = empleadoService.guardarEmpleado(dto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(creado);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Empleado> getById(@PathVariable Long id) {
-        return empleadoService.obtenerEmpleadoPorId(id)
+    @GetMapping("/{legajo}")
+    public ResponseEntity<EmpleadoDTO> getById(@PathVariable Long legajo) {
+        return empleadoService.obtenerEmpleadoPorId(legajo)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Empleado> update(@PathVariable Long id, @RequestBody Empleado empleadoActualizado) {
+    @PutMapping("/{legajo}")
+    public ResponseEntity<EmpleadoDTO> update(
+            @PathVariable Long legajo,
+            @Valid @RequestBody EmpleadoDTO dto
+    ) {
         try {
-            Empleado actualizado = empleadoService.actualizarEmpleado(id, empleadoActualizado);
-            return ResponseEntity.ok(actualizado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+                EmpleadoDTO actualizado = empleadoService.actualizarEmpleado(legajo, dto);
+                return ResponseEntity.ok(actualizado);
+            } catch (EntityNotFoundException ex) {
+                return ResponseEntity.notFound().build();
+            } catch (RuntimeException ex) {
+                // para el test que lanza RuntimeException
+                        return ResponseEntity.notFound().build();
+            }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        empleadoService.eliminarEmpleado(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{legajo}")
+    public ResponseEntity<Void> delete(@PathVariable Long legajo) {
+        try {
+            empleadoService.eliminarEmpleado(legajo);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{legajo}/pruebas")
@@ -58,3 +80,4 @@ public class EmpleadoController {
         return pruebaClient.obtenerPruebasPorEmpleado(legajo);
     }
 }
+

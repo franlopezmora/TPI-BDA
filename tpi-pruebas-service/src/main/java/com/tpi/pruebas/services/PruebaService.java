@@ -7,16 +7,22 @@ import com.tpi.pruebas.entities.TipoIncidente;
 import com.tpi.pruebas.repositories.IncidenteRepository;
 import com.tpi.pruebas.repositories.PruebaRepository;
 import com.tpi.pruebas.repositories.TipoIncidenteRepository;
+import com.tpi.pruebas.exception.InteresadoRestringidoException;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class PruebaService {
+    private static final Logger log = LoggerFactory.getLogger(PruebaService.class);
+
     private final PruebaRepository pruebaRepository;
     private final EmpleadoClient empleadoClient;
     private final InteresadoClient interesadoClient;
@@ -71,6 +77,36 @@ public class PruebaService {
         return false;
     }
 
+    public PruebaDTO actualizar(Prueba prueba) {
+        // 1) Existe?
+        if (!pruebaRepository.existsById(prueba.getId())) {
+            throw new IllegalArgumentException("Prueba con id " + prueba.getId() + " no encontrada");
+        }
+
+        // 2) Validaciones de negocio (idénticas a crear)
+        InteresadoDTO interesado = interesadoClient.getInteresado(prueba.getIdInteresado());
+        if (Boolean.TRUE.equals(interesado.getRestringido())) {
+            throw new InteresadoRestringidoException(interesado.getId());
+        }
+        if (interesado.getFechaVencimientoLicencia() == null
+                || interesado.getFechaVencimientoLicencia().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La licencia del interesado está vencida.");
+        }
+
+        // Asegurar que el vehículo no esté en otra prueba activa distinta de ésta
+        boolean otroEnPrueba = pruebaRepository
+                .findByIdVehiculoAndFechaHoraFinIsNull(prueba.getIdVehiculo())
+                .filter(p -> !p.getId().equals(prueba.getId()))
+                .isPresent();
+        if (otroEnPrueba) {
+            throw new IllegalArgumentException("El vehículo ya está en otra prueba activa.");
+        }
+
+        // 3) Persisto y retorno DTO
+        Prueba saved = pruebaRepository.save(prueba);
+        return toDto(saved);
+    }
+
     private PruebaDTO toDto(Prueba e){
         EmpleadoDTO emp = empleadoClient.getEmpleado(e.getIdEmpleado());
         InteresadoDTO intz = interesadoClient.getInteresado(e.getIdInteresado());
@@ -90,8 +126,14 @@ public class PruebaService {
         Prueba prueba = pruebaRepository.findById(idPrueba)
                 .orElseThrow(() -> new IllegalArgumentException("Prueba no encontrada"));
 
-        TipoIncidente tipo = tipoIncidenteRepository.findByNombreIncidente(nombreTipoIncidente)
-                .orElseThrow(() -> new IllegalArgumentException("Tipo de incidente no válido"));
+        Optional<TipoIncidente> tipoOpt = tipoIncidenteRepository
+                .findByNombreIncidente(nombreTipoIncidente);
+        if (tipoOpt.isEmpty()) {
+            log.warn("Tipo de incidente '{}' no encontrado. Se omite registro de incidente.",
+                    nombreTipoIncidente);
+            return;
+        }
+        TipoIncidente tipo = tipoOpt.get();
 
         Incidente incidente = new Incidente();
         incidente.setPrueba(prueba);
@@ -99,6 +141,10 @@ public class PruebaService {
         incidente.setFechaHora(LocalDateTime.now());
 
         incidenteRepository.save(incidente);
+    }
+
+    public boolean existsById(Long id) {
+        return pruebaRepository.existsById(id);
     }
 
     public List<IncidenteDTO> listarIncidentes() {
@@ -141,66 +187,61 @@ public class PruebaService {
         // 1. Buscar prueba activa
         Optional<Prueba> pruebaOpt = pruebaRepository.findByIdVehiculoAndFechaHoraFinIsNull(dto.getIdVehiculo());
         if (pruebaOpt.isEmpty()) return;
-
         Prueba prueba = pruebaOpt.get();
 
         // 2. Traer datos relacionados
         InteresadoDTO interesado = interesadoClient.getInteresado(prueba.getIdInteresado());
-        EmpleadoDTO empleado = empleadoClient.getEmpleado(prueba.getIdEmpleado());
+        EmpleadoDTO empleado     = empleadoClient.getEmpleado(prueba.getIdEmpleado());
 
         // 3. Obtener configuración externa
         ConfiguracionDTO config = configuracionClient.obtenerConfiguracion();
-        if (config.getZonasPeligrosas() != null) {
-            config.getZonasPeligrosas().stream().forEach(zona -> {
-                // tu lógica
-            });
-        }
+
+        // ───> Aquí protegemos contra config.getZonasPeligrosas() == null
+        List<ZonaPeligrosaDTO> zonas = config.getZonasPeligrosas() != null
+                ? config.getZonasPeligrosas()
+                : Collections.emptyList();
+
         // 4. Calcular distancia a la agencia
         double distancia = calcularDistancia(
                 dto.getLatitud(), dto.getLongitud(),
                 config.getUbicacionAgencia().getLatitud(),
                 config.getUbicacionAgencia().getLongitud()
         );
-
         boolean fueraDeRadio = distancia > config.getRadioMaximoMetros();
 
-        if (distancia <= 0.0001) { // tolerancia, puede ajustarse según unidad
+        // 5. Si está de vuelta en la base, cerramos prueba
+        if (distancia <= 0.0001) {
             prueba.setFechaHoraFin(dto.getFechaHora());
             pruebaRepository.save(prueba);
             return;
         }
 
-        // 5. Validar si está en una zona peligrosa
-        boolean enZonaPeligrosa = config.getZonasPeligrosas().stream().anyMatch(zona -> {
-            double distanciaZona = calcularDistancia(
+        // 6. Validar zona peligrosa con la lista segura
+        boolean enZonaPeligrosa = zonas.stream().anyMatch(zona -> {
+            double dZona = calcularDistancia(
                     dto.getLatitud(), dto.getLongitud(),
                     zona.getCoordenadas().getLatitud(),
                     zona.getCoordenadas().getLongitud()
             );
-            return distanciaZona <= zona.getRadioMetros();
+            return dZona <= zona.getRadioMetros();
         });
 
-        // 6. Si se incumple alguna condición, actuar
+        // 7. Si incumple radio o entra en zona, actuamos
         if (fueraDeRadio || enZonaPeligrosa) {
             String motivo = fueraDeRadio ? "Fuera de radio permitido" : "Ingreso a zona peligrosa";
-
-            // a. Registrar incidente
             registrarIncidente(prueba.getId(), motivo);
-
-            // b. Restringir al interesado
             interesadoClient.restringirInteresado(interesado.getId());
 
-            // c. Enviar notificación automática
             NotificacionDTO notif = new NotificacionDTO();
             notif.setTipo("Alerta");
             notif.setTelefono(empleado.getTelefonoContacto());
             notif.setIdPrueba(prueba.getId());
             notif.setMensaje("🚨 Vehículo en infracción: " + motivo);
             notif.setFecha(LocalDateTime.now().withNano(0));
-
             notificacionClient.enviarNotificacion(notif);
         }
     }
+
 
     public boolean vehiculoEstaEnPrueba(Long idVehiculo) {
         return pruebaRepository.findByIdVehiculoAndFechaHoraFinIsNull(idVehiculo).isPresent();
