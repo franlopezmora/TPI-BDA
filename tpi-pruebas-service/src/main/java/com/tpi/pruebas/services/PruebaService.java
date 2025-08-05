@@ -110,7 +110,8 @@ public class PruebaService {
     private PruebaDTO toDto(Prueba e){
         EmpleadoDTO emp = empleadoClient.getEmpleado(e.getIdEmpleado());
         InteresadoDTO intz = interesadoClient.getInteresado(e.getIdInteresado());
-        VehiculoDTO veh = vehiculoClient.obtenerVehiculo(e.getIdVehiculo());
+        VehiculoDTO veh = vehiculoClient
+                .obtenerVehiculoInclusoInactivo(e.getIdVehiculo());
         PruebaDTO dto = new PruebaDTO();
         dto.setId(e.getId());
         dto.setFechaHoraInicio(e.getFechaHoraInicio());

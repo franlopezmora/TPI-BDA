@@ -5,6 +5,7 @@ import com.tpi.vehiculos.entities.Modelo;
 import com.tpi.vehiculos.entities.Vehiculo;
 import com.tpi.vehiculos.repositories.ModeloRepository;
 import com.tpi.vehiculos.repositories.VehiculoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,12 @@ public class VehiculoService {
                     v.setModelo(vehiculo.getModelo());
                     return vehiculoRepository.save(v);
                 });
+    }
+
+    public VehiculoDTO obtenerInclusoInactivo(Long id) {
+        Vehiculo v = vehiculoRepository.findByIdInclusoInactivo(id)
+                .orElseThrow(() -> new EntityNotFoundException("Vehículo no encontrado"));
+        return toDTO(v);
     }
 
     public boolean eliminar(Long id) {
