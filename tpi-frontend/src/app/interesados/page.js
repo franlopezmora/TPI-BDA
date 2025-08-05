@@ -82,7 +82,7 @@ export default function InteresadosPage() {
                 <td className="px-4 py-2 border-b border-gray-700">{i.id}</td>
                 <td className="px-4 py-2 border-b border-gray-700">{i.nombre}</td>
                 <td className="px-4 py-2 border-b border-gray-700">{i.apellido}</td>
-                <td className="px-4 py-2 border-b border-gray-700">{i.dni}</td>
+                <td className="px-4 py-2 border-b border-gray-700">{i.documento}</td>
                 <td className="px-4 py-2 border-b border-gray-700 space-x-2">
                   <button
                     onClick={() => handleEdit(i)}
