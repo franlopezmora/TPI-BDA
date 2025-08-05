@@ -31,5 +31,8 @@ export async function deleteEmpleado(id) {
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
   });
-  if (!res.ok) throw new Error("Error al eliminar empleado");
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg);
+  }
 }

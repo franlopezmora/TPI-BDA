@@ -2,25 +2,19 @@
 import { useState, useEffect } from "react";
 import { getModelos } from "../../modelos/services/modeloService";
 
-export default function VehiculoForm({ onSubmit, vehiculoEditar }) {
+export default function VehiculoForm({ modelos, onSubmit, vehiculoEditar }) {
   const [form, setForm] = useState({
     patente: "",
     anio: "",
     idModelo: "",
   });
 
-  const [modelos, setModelos] = useState([]);
-
-  useEffect(() => {
-    getModelos().then(setModelos).catch(console.error);
-  }, []);
-
   useEffect(() => {
     if (vehiculoEditar) {
       setForm({
         patente: vehiculoEditar.patente || "",
         anio: vehiculoEditar.anio || "",
-        idModelo: vehiculoEditar.modelo?.id || "",
+        idModelo: vehiculoEditar.idModelo.toString() || "",
       });
     } else {
       setForm({ patente: "", anio: "", idModelo: "" });
@@ -34,7 +28,11 @@ export default function VehiculoForm({ onSubmit, vehiculoEditar }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(form);
+    onSubmit({
+      ...form,
+      anio: Number(form.anio),
+      idModelo: Number(form.idModelo),
+    });
     setForm({ patente: "", anio: "", idModelo: "" });
   };
 
@@ -75,9 +73,9 @@ export default function VehiculoForm({ onSubmit, vehiculoEditar }) {
           >
             <option value="">Seleccione un modelo</option>
             {modelos.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.descripcion}
-              </option>
+                <option key={m.id} value={m.id.toString()}>
+                  {m.descripcion}
+                </option>
             ))}
           </select>
       </div>

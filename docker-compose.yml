@@ -79,8 +79,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: tpi-frontend/Dockerfile
+      context: ./tpi-frontend
+      dockerfile: Dockerfile
     container_name: tpi-frontend
     ports:
       - "3000:3000"

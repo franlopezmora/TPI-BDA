@@ -1,10 +1,14 @@
 package com.tpi.admin.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 
 @Entity
 @Table(name= "Empleados")
+@SQLDelete(sql  = "UPDATE empleados SET activo = false WHERE legajo = ?")
+@Where(clause = "activo = true")
 public class Empleado {
 
     @Id
@@ -24,11 +28,15 @@ public class Empleado {
     public Empleado() {
     }
 
-    public Empleado(Long legajo, String nombre, String apellido, String telefonoContacto) {
+    @Column(nullable = false)
+    private Boolean activo = true;
+
+    public Empleado(Long legajo, String nombre, String apellido, String telefonoContacto, Boolean activo) {
         this.legajo = legajo;
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefonoContacto = telefonoContacto;
+        this.activo = activo;
     }
 
     @Override
@@ -38,7 +46,16 @@ public class Empleado {
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
                 ", telefonoContacto='" + telefonoContacto + '\'' +
+                ", activo=" + activo +
                 '}';
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
     public Long getLegajo() {

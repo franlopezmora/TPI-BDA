@@ -8,6 +8,7 @@ import com.tpi.admin.services.EmpleadoService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,12 +67,15 @@ public class EmpleadoController {
     }
 
     @DeleteMapping("/{legajo}")
-    public ResponseEntity<Void> delete(@PathVariable Long legajo) {
+    public ResponseEntity<String> eliminarEmpleado(@PathVariable Long legajo) {
         try {
             empleadoService.eliminarEmpleado(legajo);
             return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
+        } catch (DataIntegrityViolationException ex) {
+            // devuelvo 409 Conflict con un mensaje claro
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("No se puede eliminar: este empleado tiene pruebas asociadas.");
         }
     }
 

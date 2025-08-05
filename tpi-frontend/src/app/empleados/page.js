@@ -5,7 +5,7 @@ import {
   createEmpleado,
   updateEmpleado,
   deleteEmpleado,
-} from "./services/empleadoService.js";
+} from "./services/EmpleadoService";
 import EmpleadoForm from "./components/EmpleadoForm.js";
 
 export default function EmpleadosPage() {
@@ -54,6 +54,7 @@ export default function EmpleadosPage() {
       fetchEmpleados();
     } catch (err) {
       setError("Error al eliminar empleado");
+      alert(err.message);
     }
   };
 

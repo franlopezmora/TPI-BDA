@@ -7,11 +7,13 @@ import {
   deleteVehiculo,
 } from "./services/vehiculoService.js";
 import VehiculoForm from "./components/VehiculoForm.js";
+import { getModelos } from "../modelos/services/modeloService";
 
 export default function VehiculosPage() {
   const [vehiculos, setVehiculos] = useState([]);
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState(null);
+  const [modelos, setModelos]         = useState([]);
 
   const fetchVehiculos = async () => {
     try {
@@ -20,6 +22,20 @@ export default function VehiculosPage() {
       setError(null);
     } catch (err) {
       setError("Error al obtener vehículos");
+    }
+  };
+
+  useEffect(() => {
+    fetchVehiculos();
+    fetchModelos();
+  }, []);
+
+  const fetchModelos = async () => {
+    try {
+      const m = await getModelos();
+      setModelos(m);
+    } catch (e) {
+      console.error("No pude bajar modelos", e);
     }
   };
 
@@ -61,8 +77,13 @@ export default function VehiculosPage() {
       {error && <div className="text-red-400 mb-4">{error}</div>}
 
       <VehiculoForm
-        onSubmit={handleSubmit}
-        vehiculoEditar={editId ? vehiculos.find(v => v.id === editId) : null}
+          modelos={modelos}
+          onSubmit={handleSubmit}
+          vehiculoEditar={
+            editId
+                ? vehiculos.find((v) => v.id === editId)
+                : null
+          }
       />
 
       <div className="overflow-x-auto mt-6">
@@ -82,7 +103,7 @@ export default function VehiculosPage() {
                 <td className="px-4 py-2 border-b border-gray-700">{v.id}</td>
                 <td className="px-4 py-2 border-b border-gray-700">{v.patente}</td>
                 <td className="px-4 py-2 border-b border-gray-700">{v.anio}</td>
-                <td className="px-4 py-2 border-b border-gray-700">{v.modelo?.descripcion}</td>
+                <td className="px-4 py-2 border-b border-gray-700">{modelos.find((m) => m.id === v.idModelo)?.descripcion || "-"}</td>
                 <td className="px-4 py-2 border-b border-gray-700 space-x-2">
                   <button
                     onClick={() => handleEdit(v)}
