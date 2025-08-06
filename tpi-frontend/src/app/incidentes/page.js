@@ -12,7 +12,6 @@ import IncidenteForm from "./components/IncidenteForm.js";
 export default function IncidentesPage() {
     const [incidentes, setIncidentes] = useState([]);
     const [tipos, setTipos] = useState([]);
-    const [editId, setEditId] = useState(null);
     const [error, setError] = useState(null);
 
     const fetchIncidentes = async () => {
@@ -41,12 +40,7 @@ export default function IncidentesPage() {
 
     const handleSubmit = async (formData) => {
         try {
-            if (editId) {
-                await updateIncidente(editId, formData);
-            } else {
-                await createIncidente(formData);
-            }
-            setEditId(null);
+            await createIncidente(formData);
             fetchIncidentes();
         } catch {
             setError("Error al guardar incidente");
@@ -75,11 +69,6 @@ export default function IncidentesPage() {
             <IncidenteForm
                 tipos={tipos}
                 onSubmit={handleSubmit}
-                incidenteEditar={
-                    editId
-                        ? incidentes.find((i) => i.id === editId)
-                        : null
-                }
             />
 
             <div className="overflow-x-auto mt-6">
@@ -99,12 +88,6 @@ export default function IncidentesPage() {
                             <td className="px-4 py-2 border-b border-gray-700">{i.mensaje || "-"}</td>
                             <td className="px-4 py-2 border-b border-gray-700">{i.tipo || "-"}</td>
                             <td className="px-4 py-2 border-b border-gray-700 space-x-2">
-                                <button
-                                    onClick={() => handleEdit(i)}
-                                    className="bg-yellow-500 hover:bg-yellow-600 text-black px-3 py-1 rounded"
-                                >
-                                    Editar
-                                </button>
                                 <button
                                     onClick={() => handleDelete(i.id)}
                                     className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
