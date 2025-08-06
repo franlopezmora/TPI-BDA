@@ -10,6 +10,7 @@ public class IncidenteDTO {
     private LocalDateTime fecha;
     private Long legajoEmpleado;
     private Long idPrueba;
+    private PruebaDTO prueba;
     private String nombreEmpleado;
     private String apellidoEmpleado;
     private String nombreInteresado;

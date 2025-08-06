@@ -11,8 +11,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Mono;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -28,18 +30,19 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(auth -> auth
-                        .pathMatchers("/admin/**").hasRole("ADMIN")
-                        .pathMatchers("/vehiculos/**").hasRole("VEHICULO")
-                        .pathMatchers("/reportes/**").hasAnyRole("ADMIN")
-                        .pathMatchers("/pruebas/**").hasRole("EMPLEADO")
-                        .pathMatchers("/notificaciones/**").hasAnyRole("ADMIN", "EMPLEADO")
-                        .anyExchange().authenticated()
+//                        .pathMatchers("/admin/**").hasRole("ADMIN")
+//                        .pathMatchers("/vehiculos/**").hasRole("VEHICULO")
+//                        .pathMatchers("/reportes/**").hasAnyRole("ADMIN")
+//                        .pathMatchers("/pruebas/**").hasRole("EMPLEADO")
+//                        .pathMatchers("/notificaciones/**").hasAnyRole("ADMIN", "EMPLEADO")
+//                        .anyExchange().authenticated()
+                          .anyExchange().permitAll()
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwtSpec -> jwtSpec
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                        )
-                )
+//                .oauth2ResourceServer(oauth2 -> oauth2
+//                        .jwt(jwtSpec -> jwtSpec
+//                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+//                        )
+//                )
                 .build();
     }
 
@@ -68,5 +71,19 @@ public class SecurityConfig {
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .map(authority -> (GrantedAuthority) authority)
                 .toList();
+    }
+
+    @Bean
+    public CorsWebFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("*");
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
+        config.setAllowCredentials(false);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return new CorsWebFilter(source);
     }
 }

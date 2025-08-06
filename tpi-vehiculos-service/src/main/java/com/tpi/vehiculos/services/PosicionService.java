@@ -9,7 +9,6 @@ import com.tpi.vehiculos.repositories.VehiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -42,19 +41,24 @@ public class PosicionService {
     }
 
     public Posicion crear(Posicion posicion) {
-        Long idVehiculo = Long.valueOf(posicion.getVehiculo().getId());
+        Long idVehiculo = posicion.getVehiculo().getId().longValue();
 
-        // Validar si el vehículo está en una prueba activa
         boolean estaEnPrueba = pruebaClient.vehiculoEstaEnPrueba(idVehiculo);
         if (!estaEnPrueba) {
-            throw new IllegalArgumentException("El vehículo no está en una prueba activa. No se puede registrar la posición.");
+            throw new IllegalArgumentException(
+                    "El vehículo no está en una prueba activa. No se puede registrar la posición."
+            );
         }
 
         Posicion guardada = posicionRepository.save(posicion);
 
-        // Llamar automáticamente a pruebas-service para validación
-        PosicionDTO dto = toDTO(guardada);
-        pruebaClient.validarPosicion(dto);
+        try {
+            PosicionDTO dto = toDTO(guardada);
+            pruebaClient.validarPosicion(dto);
+        } catch (feign.FeignException ex) {
+            System.err.println("⚠️ Falló validarPosicion en Pruebas: "
+                    + ex.status() + " - " + ex.getMessage());
+        }
 
         return guardada;
     }
@@ -92,7 +96,7 @@ public class PosicionService {
                 posicion.getFechaHora(),
                 posicion.getLatitud(),
                 posicion.getLongitud(),
-                posicion.getVehiculo() != null ? posicion.getVehiculo().getId().longValue() : null
+                posicion.getVehiculo().getId().longValue()
         );
     }
 

@@ -5,14 +5,20 @@ public class VehiculoDTO {
     private String patente;
     private Integer anio;
     private Long idModelo;
+    private Boolean activo;
 
     public VehiculoDTO() {}
 
-    public VehiculoDTO(Long id, String patente, Integer anio, Long idModelo) {
+    public VehiculoDTO(Long id, String patente, Integer anio, Long idModelo, Boolean activo) {
         this.id = id;
         this.patente = patente;
         this.anio = anio;
         this.idModelo = idModelo;
+        this.activo   = activo;
+    }
+
+    public VehiculoDTO(Long id, String patente, Integer anio, Long idModelo) {
+        this(id, patente, anio, idModelo, true);
     }
 
     // Getters y setters
@@ -47,5 +53,12 @@ public class VehiculoDTO {
 
     public void setIdModelo(Long idModelo) {
         this.idModelo = idModelo;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 }

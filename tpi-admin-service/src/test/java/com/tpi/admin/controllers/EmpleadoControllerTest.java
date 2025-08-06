@@ -1,7 +1,7 @@
 package com.tpi.admin.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tpi.admin.entities.Empleado;
+import com.tpi.admin.dtos.EmpleadoDTO;
 import com.tpi.admin.services.EmpleadoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 public class EmpleadoControllerTest {
     private MockMvc mockMvc;
     private ObjectMapper mapper = new ObjectMapper();
@@ -27,23 +28,25 @@ public class EmpleadoControllerTest {
     @InjectMocks
     private EmpleadoController controller;
 
-    private Empleado e1;
+    private EmpleadoDTO dto1;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
-        e1 = new Empleado();
-        e1.setLegajo(1L);
-        e1.setNombre("Juan");
-        e1.setApellido("Pérez");
-        e1.setTelefonoContacto("1234-5678");
+        // --- Creamos un DTO, NO una entidad ---
+        dto1 = new EmpleadoDTO();
+        dto1.setLegajo(1L);
+        dto1.setNombre("Juan");
+        dto1.setApellido("Pérez");
+        dto1.setTelefonoContacto("1234-5678");
     }
 
     @Test
     void getAll_deberiaDevolver200yLista() throws Exception {
-        when(service.listarEmpleados()).thenReturn(List.of(e1));
+        // el service devuelve DTOs
+        when(service.listarEmpleados()).thenReturn(List.of(dto1));
 
         mockMvc.perform(get("/empleados"))
                 .andExpect(status().isOk())
@@ -53,19 +56,19 @@ public class EmpleadoControllerTest {
 
     @Test
     void create_deberiaAceptarPOSTyDevolverObjeto() throws Exception {
-        when(service.guardarEmpleado(any(Empleado.class))).thenReturn(e1);
+        when(service.guardarEmpleado(any(EmpleadoDTO.class))).thenReturn(dto1);
 
         mockMvc.perform(post("/empleados")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(e1)))
-                .andExpect(status().isOk())
+                        .content(mapper.writeValueAsString(dto1)))
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.legajo").value(1))
                 .andExpect(jsonPath("$.apellido").value("Pérez"));
     }
 
     @Test
     void getById_existente_deberiaDevolver200() throws Exception {
-        when(service.obtenerEmpleadoPorId(1L)).thenReturn(Optional.of(e1));
+        when(service.obtenerEmpleadoPorId(1L)).thenReturn(Optional.of(dto1));
 
         mockMvc.perform(get("/empleados/1"))
                 .andExpect(status().isOk())
@@ -82,13 +85,13 @@ public class EmpleadoControllerTest {
 
     @Test
     void update_existente_deberiaDevolver200() throws Exception {
-        Empleado upd = new Empleado();
+        EmpleadoDTO upd = new EmpleadoDTO();
         upd.setLegajo(1L);
         upd.setNombre("Ana");
         upd.setApellido("García");
         upd.setTelefonoContacto("9999-0000");
 
-        when(service.actualizarEmpleado(eq(1L), any(Empleado.class))).thenReturn(upd);
+        when(service.actualizarEmpleado(eq(1L), any(EmpleadoDTO.class))).thenReturn(upd);
 
         mockMvc.perform(put("/empleados/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +107,7 @@ public class EmpleadoControllerTest {
 
         mockMvc.perform(put("/empleados/9")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(e1)))
+                        .content(mapper.writeValueAsString(dto1)))
                 .andExpect(status().isNotFound());
     }
 

@@ -2,10 +2,15 @@ package com.tpi.admin.entities;
 
 import com.tpi.admin.utils.BooleanIntegerConverter;
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "Interesados")
+@SQLDelete(sql  = "UPDATE interesados SET activo = false WHERE id = ?")
+@Where(clause = "activo = true")
 public class Interesado {
 
 
@@ -36,18 +41,10 @@ public class Interesado {
     @Column(name = "FECHA_VENCIMIENTO_LICENCIA")
     private LocalDate fechaVencimientoLicencia;
 
-    public Interesado() {
-    }
+    @Column(nullable = false)
+    private Boolean activo = true;
 
-    public Interesado(Long id, String tipoDocumento, String documento, String nombre, String apellido, Boolean restringido, Integer nroLicencia, LocalDate fechaVencimientoLicencia) {
-        this.id = id;
-        this.tipoDocumento = tipoDocumento;
-        this.documento = documento;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.restringido = restringido;
-        this.nroLicencia = nroLicencia;
-        this.fechaVencimientoLicencia = fechaVencimientoLicencia;
+    public Interesado() {
     }
 
     @Override
@@ -61,7 +58,28 @@ public class Interesado {
                 ", restringido=" + restringido +
                 ", nroLicencia=" + nroLicencia +
                 ", fechaVencimientoLicencia=" + fechaVencimientoLicencia +
+                ", activo=" + activo +
                 '}';
+    }
+
+    public Interesado(Long id, String tipoDocumento, String documento, String nombre, String apellido, Boolean restringido, Integer nroLicencia, LocalDate fechaVencimientoLicencia, Boolean activo) {
+        this.id = id;
+        this.tipoDocumento = tipoDocumento;
+        this.documento = documento;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.restringido = restringido;
+        this.nroLicencia = nroLicencia;
+        this.fechaVencimientoLicencia = fechaVencimientoLicencia;
+        this.activo = activo;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
     public Long getId() {
