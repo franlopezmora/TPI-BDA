@@ -1,22 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 
-export default function IncidenteForm({ tipos, onSubmit, incidenteEditar }) {
+export default function IncidenteForm({ tipos, onSubmit }) {
     const [form, setForm] = useState({
         descripcion: "",
         idTipoIncidente: "",
     });
-
-    useEffect(() => {
-        if (incidenteEditar) {
-            setForm({
-                descripcion: incidenteEditar.descripcion || "",
-                idTipoIncidente: incidenteEditar.idTipoIncidente?.toString() || "",
-            });
-        } else {
-            setForm({ descripcion: "", idTipoIncidente: "" });
-        }
-    }, [incidenteEditar]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -68,7 +57,7 @@ export default function IncidenteForm({ tipos, onSubmit, incidenteEditar }) {
                 type="submit"
                 className="bg-blue-600 h-[33.8px] hover:bg-blue-700 text-white px-4 py-1 rounded shadow"
             >
-                {incidenteEditar ? "Actualizar" : "Crear"}
+                Crear
             </button>
         </form>
     );
