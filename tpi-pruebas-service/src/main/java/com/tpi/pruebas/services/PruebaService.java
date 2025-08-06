@@ -172,31 +172,54 @@ public class PruebaService {
 
     private IncidenteDTO mapIncidenteToDTO(Incidente inc) {
         IncidenteDTO dto = new IncidenteDTO();
+
+        // 1) Campos básicos
         dto.setId(inc.getId());
-        dto.setFecha(inc.getFechaHora());
+        dto.setFechaHora(inc.getFechaHora());
+
         if (inc.getTipoIncidente() != null) {
-            dto.setTipo(inc.getTipoIncidente().getNombreIncidente());
+            dto.setIdTipoIncidente(inc.getTipoIncidente().getId());
+            dto.setTipoDescripcion(inc.getTipoIncidente().getNombreIncidente());
         }
 
-        // 1) Asignamos siempre el FK
+        // 2) FK a prueba
         Long idPrueba = inc.getIdPrueba();
         dto.setIdPrueba(idPrueba);
 
-        // 2) Buscamos la Prueba de forma segura
+        // 3) Mapeo condicional de prueba para mensaje y resto de datos
         pruebaRepository.findById(idPrueba).ifPresentOrElse(prueba -> {
-            // si existe, mapeamos sus datos al DTO
-            EmpleadoDTO emp = empleadoClient.getEmpleado(prueba.getIdEmpleado());
-            dto.setLegajoEmpleado(emp.getLegajo());
-            InteresadoDTO intz = interesadoClient.getInteresado(prueba.getIdInteresado());
-            dto.setNombreInteresado(intz.getNombre());
+            // cuando existe la prueba
             dto.setMensaje("Incidente detectado durante la prueba");
+
+            // embebemos el PruebaDTO si lo necesitas
+            dto.setPrueba(toDto(prueba));
+
+            // datos de empleado
+            EmpleadoDTO emp = empleadoClient.getEmpleado(prueba.getIdEmpleado());
+            if (emp != null) {
+                dto.setLegajoEmpleado(emp.getLegajo());
+                dto.setNombreEmpleado(emp.getNombre());
+                dto.setApellidoEmpleado(emp.getApellido());
+                dto.setTelefono(emp.getTelefonoContacto());
+            }
+
+            // datos de interesado
+            InteresadoDTO intz = interesadoClient.getInteresado(prueba.getIdInteresado());
+            if (intz != null) {
+                dto.setIdInteresado(intz.getId());
+                dto.setNombreInteresado(intz.getNombre());
+                dto.setApellidoInteresado(intz.getApellido());
+            }
+
         }, () -> {
-            // si no existe (fue borrada), devolvemos un mensaje por fallback
+            // si la prueba fue borrada o no existe
             dto.setMensaje("Prueba eliminada, pero incidente registrado");
         });
 
         return dto;
     }
+
+
 
     public void validarPosicion(PosicionDTO dto) {
         // 1. Buscar prueba activa
