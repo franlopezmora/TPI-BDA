@@ -134,6 +134,7 @@ public class PruebaService {
         dto.setEmpleado(emp);
         dto.setInteresado(intz);
         dto.setVehiculo(veh);
+        dto.setIdVehiculo(e.getIdVehiculo());
         return dto;
     }
 

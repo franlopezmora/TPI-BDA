@@ -61,7 +61,7 @@ export default function PosicionesPage() {
             {posiciones.map(p => (
               <tr key={p.id} className="hover:bg-gray-800 transition">
                 <td className="px-4 py-2 border-b border-gray-700">{p.id}</td>
-                <td className="px-4 py-2 border-b border-gray-700">{p.vehiculo?.id}</td>
+                <td className="px-4 py-2 border-b border-gray-700">{p.idVehiculo}</td>
                 <td className="px-4 py-2 border-b border-gray-700">{p.latitud}</td>
                 <td className="px-4 py-2 border-b border-gray-700">{p.longitud}</td>
                 <td className="px-4 py-2 border-b border-gray-700">{p.fechaHora}</td>
