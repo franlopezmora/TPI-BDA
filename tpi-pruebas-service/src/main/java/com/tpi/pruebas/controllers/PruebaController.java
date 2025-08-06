@@ -6,7 +6,6 @@ import com.tpi.pruebas.entities.Prueba;
 import com.tpi.pruebas.exception.InteresadoRestringidoException;
 import com.tpi.pruebas.services.PruebaService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -125,9 +124,11 @@ public class PruebaController {
     }
 
     @GetMapping("/vehiculo-en-prueba/{idVehiculo}")
-    public ResponseEntity<Boolean> vehiculoEnPrueba(@PathVariable Long idVehiculo) {
-        boolean estaEnPrueba = pruebaService.vehiculoEstaEnPrueba(idVehiculo);
-        return ResponseEntity.ok(estaEnPrueba);
+    public boolean vehiculoEnPrueba(@PathVariable Long idVehiculo) {
+        log.info("ENTRY /pruebas/vehiculo-en-prueba/{} called", idVehiculo);
+        boolean enPrueba = pruebaService.vehiculoEstaEnPrueba(idVehiculo);
+        log.info("RESULT vehiculo-en-prueba/{} -> {}", idVehiculo, enPrueba);
+        return enPrueba;
     }
 
 }

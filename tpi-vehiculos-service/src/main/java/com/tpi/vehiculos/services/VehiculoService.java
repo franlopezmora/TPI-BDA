@@ -77,7 +77,8 @@ public class VehiculoService {
                 vehiculo.getId().longValue(),
                 vehiculo.getPatente(),
                 vehiculo.getAnio(),
-                vehiculo.getModelo() != null ? vehiculo.getModelo().getId().longValue() : null
+                vehiculo.getModelo() != null ? vehiculo.getModelo().getId().longValue() : null,
+                vehiculo.getActivo()
         );
     }
 

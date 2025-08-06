@@ -170,7 +170,7 @@ class PruebaServiceTest {
         TipoIncidente tipo = new TipoIncidente();
         tipo.setNombreIncidente("Error");
         inc.setTipoIncidente(tipo);
-        inc.setPrueba(p);
+        inc.setIdPrueba(p.getId());
         when(incidenteRepository.findAll()).thenReturn(List.of(inc));
         when(empleadoClient.getEmpleado(10L)).thenReturn(empDto);
         when(interesadoClient.getInteresado(20L)).thenReturn(intDto);

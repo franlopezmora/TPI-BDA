@@ -53,6 +53,13 @@ public class PruebaService {
                 .map(this::toDto);
     }
     public PruebaDTO crear(Prueba prueba){
+        VehiculoDTO veh = vehiculoClient.obtenerVehiculoInclusoInactivo(prueba.getIdVehiculo());
+        if (veh == null || Boolean.FALSE.equals(veh.getActivo())) {
+            throw new IllegalArgumentException(
+                    "El vehículo con id " + prueba.getIdVehiculo() + " está dado de baja y no puede iniciar pruebas."
+            );
+        }
+
         InteresadoDTO interesado = interesadoClient.getInteresado(prueba.getIdInteresado());
         if(interesado.getRestringido() != null && interesado.getRestringido()){
             throw  new IllegalArgumentException("El interesado está restringido y no puede realizar pruebas en esta agencia.");
@@ -78,6 +85,13 @@ public class PruebaService {
     }
 
     public PruebaDTO actualizar(Prueba prueba) {
+        VehiculoDTO veh = vehiculoClient.obtenerVehiculoInclusoInactivo(prueba.getIdVehiculo());
+        if (veh == null || Boolean.FALSE.equals(veh.getActivo())) {
+            throw new IllegalArgumentException(
+                    "El vehículo con id " + prueba.getIdVehiculo() + " está dado de baja y no puede actualizar pruebas."
+            );
+        }
+
         // 1) Existe?
         if (!pruebaRepository.existsById(prueba.getId())) {
             throw new IllegalArgumentException("Prueba con id " + prueba.getId() + " no encontrada");
@@ -127,21 +141,21 @@ public class PruebaService {
         Prueba prueba = pruebaRepository.findById(idPrueba)
                 .orElseThrow(() -> new IllegalArgumentException("Prueba no encontrada"));
 
-        Optional<TipoIncidente> tipoOpt = tipoIncidenteRepository
-                .findByNombreIncidente(nombreTipoIncidente);
-        if (tipoOpt.isEmpty()) {
-            log.warn("Tipo de incidente '{}' no encontrado. Se omite registro de incidente.",
-                    nombreTipoIncidente);
-            return;
-        }
-        TipoIncidente tipo = tipoOpt.get();
+        TipoIncidente tipo = tipoIncidenteRepository
+                .findByNombreIncidente(nombreTipoIncidente)
+                .orElseGet(() -> {
+                    log.warn("Tipo '{}' no existe, omitiendo incidente", nombreTipoIncidente);
+                    return null;
+                });
 
-        Incidente incidente = new Incidente();
-        incidente.setPrueba(prueba);
-        incidente.setTipoIncidente(tipo);
-        incidente.setFechaHora(LocalDateTime.now());
+        if (tipo == null) return;
 
-        incidenteRepository.save(incidente);
+        Incidente inc = new Incidente();
+        inc.setIdPrueba(prueba.getId());
+        inc.setTipoIncidente(tipo);
+        inc.setFechaHora(LocalDateTime.now());
+
+        incidenteRepository.save(inc);
     }
 
     public boolean existsById(Long id) {
@@ -149,39 +163,38 @@ public class PruebaService {
     }
 
     public List<IncidenteDTO> listarIncidentes() {
-        return incidenteRepository.findAll().stream().map(incidente -> {
-            IncidenteDTO dto = new IncidenteDTO();
-            dto.setId(incidente.getId());
-            dto.setFecha(incidente.getFechaHora());
+        return incidenteRepository.findAll()
+                .stream()
+                .map(this::mapIncidenteToDTO)
+                .toList();
+    }
 
-            if (incidente.getTipoIncidente() != null) {
-                dto.setTipo(incidente.getTipoIncidente().getNombreIncidente());
-            }
+    private IncidenteDTO mapIncidenteToDTO(Incidente inc) {
+        IncidenteDTO dto = new IncidenteDTO();
+        dto.setId(inc.getId());
+        dto.setFecha(inc.getFechaHora());
+        if (inc.getTipoIncidente() != null) {
+            dto.setTipo(inc.getTipoIncidente().getNombreIncidente());
+        }
 
-            Prueba prueba = incidente.getPrueba();
-            if (prueba != null) {
-                dto.setIdPrueba(prueba.getId());
+        // 1) Asignamos siempre el FK
+        Long idPrueba = inc.getIdPrueba();
+        dto.setIdPrueba(idPrueba);
 
-                EmpleadoDTO emp = empleadoClient.getEmpleado(prueba.getIdEmpleado());
-                InteresadoDTO intz = interesadoClient.getInteresado(prueba.getIdInteresado());
+        // 2) Buscamos la Prueba de forma segura
+        pruebaRepository.findById(idPrueba).ifPresentOrElse(prueba -> {
+            // si existe, mapeamos sus datos al DTO
+            EmpleadoDTO emp = empleadoClient.getEmpleado(prueba.getIdEmpleado());
+            dto.setLegajoEmpleado(emp.getLegajo());
+            InteresadoDTO intz = interesadoClient.getInteresado(prueba.getIdInteresado());
+            dto.setNombreInteresado(intz.getNombre());
+            dto.setMensaje("Incidente detectado durante la prueba");
+        }, () -> {
+            // si no existe (fue borrada), devolvemos un mensaje por fallback
+            dto.setMensaje("Prueba eliminada, pero incidente registrado");
+        });
 
-                if (emp != null) {
-                    dto.setLegajoEmpleado(emp.getLegajo());
-                    dto.setNombreEmpleado(emp.getNombre());
-                    dto.setApellidoEmpleado(emp.getApellido());
-                    dto.setTelefono(emp.getTelefonoContacto());
-                }
-
-                if (intz != null) {
-                    dto.setNombreInteresado(intz.getNombre());
-                    dto.setApellidoInteresado(intz.getApellido());
-                }
-
-                dto.setMensaje("Incidente detectado durante la prueba"); // mensaje estático o podés ajustarlo
-            }
-
-            return dto;
-        }).toList();
+        return dto;
     }
 
     public void validarPosicion(PosicionDTO dto) {

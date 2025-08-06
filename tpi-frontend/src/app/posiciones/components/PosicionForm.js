@@ -12,7 +12,7 @@ export default function PosicionForm({ onSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({
-      vehiculo: { id: Number(form.idVehiculo) },
+      idVehiculo: Number(form.idVehiculo),
       latitud:  Number(form.latitud),
       longitud: Number(form.longitud),
       fechaHora: new Date().toISOString().slice(0,19)  // o la que necesites

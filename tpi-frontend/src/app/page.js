@@ -54,6 +54,18 @@ export default function HomePage() {
         >
           Ver posiciones
         </Link>
+        <Link
+            href="/tipos-incidente"
+            className="bg-gray-600 hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg shadow transition duration-300 text-center"
+        >
+          Ver tipos de incidente
+        </Link>
+        <Link
+            href="/incidentes"
+            className="bg-gray-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-lg shadow transition duration-300 text-center"
+        >
+          Ver incidentes
+        </Link>
       </nav>
     </main>
   );
