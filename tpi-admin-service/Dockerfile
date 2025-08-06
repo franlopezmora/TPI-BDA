@@ -1,13 +1,21 @@
+# ——— STAGE 1: builder —————————————————————————————
+FROM eclipse-temurin:24-jdk AS builder
+RUN apt-get update && apt-get install -y maven
+
+WORKDIR /workspace
+COPY build.sh .
+COPY tpi-admin-service ./tpi-admin-service
+
+RUN chmod +x build.sh && ./build.sh admin
+
+# ——— STAGE 2: runtime —————————————————————————————
 FROM eclipse-temurin:24-jdk
-
-# Directorio de trabajo dentro del contenedor
 WORKDIR /app
+VOLUME /tmp
 
-# Copiar el JAR generado
-COPY target/tpi-admin-service-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder \
+     /workspace/tpi-admin-service/target/*.jar \
+     app.jar
 
-# Exponer el puerto que usa Spring Boot (ajustar si es otro)
 EXPOSE 8081
-
-# Comando para ejecutar el microservicio
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]

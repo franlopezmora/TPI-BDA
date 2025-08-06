@@ -16,9 +16,8 @@ public class Incidente {
     @JoinColumn(name = "id_tipo_incidente", nullable = false)
     private TipoIncidente tipoIncidente;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_prueba", nullable = false)
-    private Prueba prueba;
+    @Column(name = "id_prueba")
+    private Long idPrueba;
 
     @Column(name = "fecha_hora", nullable = false)
     private LocalDateTime fechaHora;
@@ -40,19 +39,19 @@ public class Incidente {
         this.tipoIncidente = tipoIncidente;
     }
 
-    public Prueba getPrueba() {
-        return prueba;
-    }
-
-    public void setPrueba(Prueba prueba) {
-        this.prueba = prueba;
-    }
-
     public LocalDateTime getFechaHora() {
         return fechaHora;
     }
 
     public void setFechaHora(LocalDateTime fechaHora) {
         this.fechaHora = fechaHora;
+    }
+
+    public Long getIdPrueba() {
+        return idPrueba;
+    }
+
+    public void setIdPrueba(Long idPrueba) {
+        this.idPrueba = idPrueba;
     }
 }

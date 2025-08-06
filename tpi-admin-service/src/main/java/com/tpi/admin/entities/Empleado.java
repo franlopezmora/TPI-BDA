@@ -1,12 +1,14 @@
 package com.tpi.admin.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import java.util.List;
 
 @Entity
 @Table(name= "Empleados")
+@SQLDelete(sql  = "UPDATE empleados SET activo = false WHERE legajo = ?")
+@Where(clause = "activo = true")
 public class Empleado {
 
     @Id
@@ -23,19 +25,18 @@ public class Empleado {
     @Column(name = "TELEFONO_CONTACTO", nullable = false)
     private String telefonoContacto;
 
-    @OneToMany(mappedBy = "empleado")
-    @JsonIgnore
-    private List<Prueba> pruebas;
-
     public Empleado() {
     }
 
-    public Empleado(Long legajo, String nombre, String apellido, String telefonoContacto, List<Prueba> pruebas) {
+    @Column(nullable = false)
+    private Boolean activo = true;
+
+    public Empleado(Long legajo, String nombre, String apellido, String telefonoContacto, Boolean activo) {
         this.legajo = legajo;
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefonoContacto = telefonoContacto;
-        this.pruebas = pruebas;
+        this.activo = activo;
     }
 
     @Override
@@ -45,8 +46,16 @@ public class Empleado {
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
                 ", telefonoContacto='" + telefonoContacto + '\'' +
-                ", pruebas=" + pruebas +
+                ", activo=" + activo +
                 '}';
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
     public Long getLegajo() {
@@ -79,13 +88,5 @@ public class Empleado {
 
     public void setTelefonoContacto(String telefonoContacto) {
         this.telefonoContacto = telefonoContacto;
-    }
-
-    public List<Prueba> getPruebas() {
-        return pruebas;
-    }
-
-    public void setPruebas(List<Prueba> pruebas) {
-        this.pruebas = pruebas;
     }
 }

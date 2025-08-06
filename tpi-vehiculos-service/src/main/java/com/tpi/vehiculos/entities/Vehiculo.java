@@ -6,11 +6,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "Vehiculos")
+@SQLDelete(sql = "UPDATE vehiculos SET activo = false WHERE id = ?")
+@Where(clause  = "activo = true")
 public class Vehiculo {
 
     @Id
@@ -33,6 +38,9 @@ public class Vehiculo {
     @Column(name = "anio", nullable = false)
     private Integer anio ;  // valor por defecto en la BD
 
+    @Column(name = "activo", nullable = false)
+    private Boolean activo = true;
+
     @OneToMany(mappedBy = "vehiculo")
     @JsonIgnore
     private List<Posicion> posiciones = new ArrayList<>();
@@ -40,11 +48,12 @@ public class Vehiculo {
     public Vehiculo () {
     }
 
-    public Vehiculo (Integer id, String patente, Modelo modelo, Integer anio, List<Posicion> posiciones) {
+    public Vehiculo(Integer id, String patente, Modelo modelo, Integer anio, Boolean activo, List<Posicion> posiciones) {
         this.id = id;
         this.patente = patente;
         this.modelo = modelo;
         this.anio = anio;
+        this.activo = activo;
         this.posiciones = posiciones;
     }
 
@@ -55,6 +64,7 @@ public class Vehiculo {
                 ", patente='" + patente + '\'' +
                 ", modelo=" + modelo +
                 ", anio=" + anio +
+                ", activo=" + activo +
                 ", posiciones=" + posiciones +
                 '}';
     }
@@ -97,5 +107,13 @@ public class Vehiculo {
 
     public void setPosiciones(List<Posicion> posiciones) {
         this.posiciones = posiciones;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 }

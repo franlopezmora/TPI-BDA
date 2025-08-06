@@ -9,4 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface VehiculoClient {
     @GetMapping("/{id}")
     VehiculoDTO obtenerVehiculo(@PathVariable("id") Long id);
+
+    @GetMapping("/{id}/all")
+    VehiculoDTO obtenerVehiculoInclusoInactivo(@PathVariable Long id);
 }

@@ -1,9 +1,12 @@
 package com.tpi.vehiculos.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 
 public class PosicionDTO {
     private Long id;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime fechaHora;
     private Double latitud;
     private Double longitud;
@@ -23,7 +26,7 @@ public class PosicionDTO {
     public void setId(Long id) { this.id = id; }
 
     public LocalDateTime getFechaHora() { return fechaHora; }
-    public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
+    private void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
 
     public Double getLatitud() { return latitud; }
     public void setLatitud(Double latitud) { this.latitud = latitud; }

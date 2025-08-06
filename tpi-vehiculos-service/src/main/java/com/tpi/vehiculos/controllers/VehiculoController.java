@@ -38,6 +38,12 @@ public class VehiculoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/{id}/all")
+    public VehiculoDTO obtenerInclusoInactivo(@PathVariable Long id) {
+        VehiculoDTO v = vehiculoService.obtenerInclusoInactivo(id);
+        return v;
+    }
+
     @PostMapping
     public ResponseEntity<VehiculoDTO> crear(@RequestBody VehiculoDTO dto) {
         Vehiculo creado = vehiculoService.crear(vehiculoService.fromDTO(dto));

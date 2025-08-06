@@ -3,12 +3,16 @@ import com.tpi.pruebas.clients.VehiculoClient;
 import com.tpi.pruebas.dtos.EmpleadoDTO;
 import com.tpi.pruebas.dtos.InteresadoDTO;
 import com.tpi.pruebas.dtos.VehiculoDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
 public class PruebaDTO {
     private Long id;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime fechaHoraInicio;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime fechaHoraFin;
     private String comentario;
 
@@ -16,9 +20,11 @@ public class PruebaDTO {
     private EmpleadoDTO empleado;
     private InteresadoDTO interesado;
     private VehiculoDTO vehiculo;
+
+    private Long idVehiculo;
     public PruebaDTO(){}
 
-    public PruebaDTO(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentario, EmpleadoDTO empleado, InteresadoDTO interesado, VehiculoDTO vehiculo) {
+    public PruebaDTO(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentario, EmpleadoDTO empleado, InteresadoDTO interesado, VehiculoDTO vehiculo, Long idVehiculo) {
         this.id = id;
         this.fechaHoraInicio = fechaHoraInicio;
         this.fechaHoraFin = fechaHoraFin;
@@ -26,6 +32,7 @@ public class PruebaDTO {
         this.empleado = empleado;
         this.interesado = interesado;
         this.vehiculo = vehiculo;
+        this.idVehiculo      = idVehiculo;
     }
 
     public Long getId() {
@@ -82,5 +89,12 @@ public class PruebaDTO {
 
     public void setVehiculo(VehiculoDTO vehiculo) {
         this.vehiculo = vehiculo;
+    }
+
+    public Long getIdVehiculo() {
+        return idVehiculo;
+    }
+    public void setIdVehiculo(Long idVehiculo) {
+        this.idVehiculo = idVehiculo;
     }
 }

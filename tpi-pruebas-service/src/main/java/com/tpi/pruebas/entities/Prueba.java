@@ -1,11 +1,15 @@
 package com.tpi.pruebas.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Pruebas")
+@SQLDelete(sql = "UPDATE pruebas SET activo = false WHERE id = ?")
+@Where(clause = "activo = true")
 public class Prueba {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +29,10 @@ public class Prueba {
     @Column(name = "ID_VEHICULO", nullable = false)
     private Long idVehiculo;
 
-    public Prueba(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentarios, Long idEmpleado, Long idInteresado, Long idVehiculo) {
+    @Column(nullable = false)
+    private Boolean activo = true;
+
+    public Prueba(Long id, LocalDateTime fechaHoraInicio, LocalDateTime fechaHoraFin, String comentarios, Long idEmpleado, Long idInteresado, Long idVehiculo, Boolean activo) {
         Id = id;
         this.fechaHoraInicio = fechaHoraInicio;
         this.fechaHoraFin = fechaHoraFin;
@@ -33,7 +40,31 @@ public class Prueba {
         this.idEmpleado = idEmpleado;
         this.idInteresado = idInteresado;
         this.idVehiculo = idVehiculo;
+        this.activo = activo;
     }
+
+    @Override
+    public String toString() {
+        return "Prueba{" +
+                "Id=" + Id +
+                ", fechaHoraInicio=" + fechaHoraInicio +
+                ", fechaHoraFin=" + fechaHoraFin +
+                ", comentarios='" + comentarios + '\'' +
+                ", idEmpleado=" + idEmpleado +
+                ", idInteresado=" + idInteresado +
+                ", idVehiculo=" + idVehiculo +
+                ", activo=" + activo +
+                '}';
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
+
     public Prueba (){}
     public Long getId() {
         return Id;

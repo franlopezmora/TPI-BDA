@@ -1,8 +1,13 @@
 package com.tpi.admin.controllers;
 
+import com.tpi.admin.clients.PruebaClient;
+import com.tpi.admin.dtos.InteresadoDTO;
+import com.tpi.admin.dtos.PruebaDTO;
 import com.tpi.admin.entities.Interesado;
 import com.tpi.admin.repositories.InteresadoRepository;
 import com.tpi.admin.services.InteresadoService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,62 +15,83 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/interesados")
 public class InteresadoController {
 
-    @Autowired
-    private InteresadoService interesadoService;
-    @Autowired
-    private InteresadoRepository interesadoRepository;
+    private final InteresadoService interesadoService;
+    private final PruebaClient pruebaClient;
+
+    public InteresadoController(InteresadoService interesadoService,
+                                PruebaClient pruebaClient) {
+        this.interesadoService = interesadoService;
+        this.pruebaClient      = pruebaClient;
+    }
 
     @GetMapping
-    public List<Interesado> getAll() {
+    public List<InteresadoDTO> getAll() {
         return interesadoService.listarInteresados();
     }
 
     @PostMapping
-    public Interesado create(@RequestBody Interesado interesado) {
-        return interesadoService.crearInteresado(interesado);
+    public ResponseEntity<InteresadoDTO> create(
+            @Valid @RequestBody InteresadoDTO dto
+    ) {
+        InteresadoDTO creado = interesadoService.crearInteresado(dto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(creado);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Interesado> getById(@PathVariable Long id) {
+    public ResponseEntity<InteresadoDTO> getById(@PathVariable Long id) {
         return interesadoService.obtenerInteresadoPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Interesado> update(@PathVariable Long id, @RequestBody Interesado interesadoActualizado) {
+    public ResponseEntity<InteresadoDTO> update(
+            @PathVariable Long id,
+            @Valid @RequestBody InteresadoDTO dto
+    ) {
         try {
-            Interesado actualizado = interesadoService.actualizarInteresado(id, interesadoActualizado);
+            InteresadoDTO actualizado = interesadoService.actualizarInteresado(id, dto);
             return ResponseEntity.ok(actualizado);
-        } catch (RuntimeException e) {
+        } catch (EntityNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        interesadoService.eliminarInteresado(id);
-        return ResponseEntity.noContent().build();
+        try {
+            interesadoService.eliminarInteresado(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/restringir/{id}")
-    public void restringirInteresado(@PathVariable Long id) {
-        Interesado interesado = interesadoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Interesado no encontrado"));
-
-        interesado.setRestringido(true);
-        interesadoRepository.save(interesado);
+    public ResponseEntity<Void> restringir(@PathVariable Long id) {
+        try {
+            interesadoService.restringirInteresado(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/restringidos")
-    public List<Interesado> getRestringidos() {
+    public List<InteresadoDTO> getRestringidos() {
         return interesadoService.listarRestringidos();
     }
 
+    @GetMapping("/{id}/pruebas")
+    public List<PruebaDTO> obtenerPruebas(@PathVariable Long id) {
+        return pruebaClient.obtenerPruebasPorEmpleado(id);
+    }
 }
+

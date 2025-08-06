@@ -1,15 +1,16 @@
 package com.tpi.admin.entities;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tpi.admin.utils.BooleanIntegerConverter;
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "Interesados")
+@SQLDelete(sql  = "UPDATE interesados SET activo = false WHERE id = ?")
+@Where(clause = "activo = true")
 public class Interesado {
 
 
@@ -40,23 +41,10 @@ public class Interesado {
     @Column(name = "FECHA_VENCIMIENTO_LICENCIA")
     private LocalDate fechaVencimientoLicencia;
 
-    @OneToMany(mappedBy = "interesado")
-    @JsonIgnore
-    private List<Prueba> pruebas;
+    @Column(nullable = false)
+    private Boolean activo = true;
 
     public Interesado() {
-    }
-
-    public Interesado(Long id, String tipoDocumento, String documento, String nombre, String apellido, Boolean restringido, Integer nroLicencia, LocalDate fechaVencimientoLicencia, List<Prueba> pruebas) {
-        this.id = id;
-        this.tipoDocumento = tipoDocumento;
-        this.documento = documento;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.restringido = restringido;
-        this.nroLicencia = nroLicencia;
-        this.fechaVencimientoLicencia = fechaVencimientoLicencia;
-        this.pruebas = pruebas;
     }
 
     @Override
@@ -70,8 +58,28 @@ public class Interesado {
                 ", restringido=" + restringido +
                 ", nroLicencia=" + nroLicencia +
                 ", fechaVencimientoLicencia=" + fechaVencimientoLicencia +
-                ", pruebas=" + pruebas +
+                ", activo=" + activo +
                 '}';
+    }
+
+    public Interesado(Long id, String tipoDocumento, String documento, String nombre, String apellido, Boolean restringido, Integer nroLicencia, LocalDate fechaVencimientoLicencia, Boolean activo) {
+        this.id = id;
+        this.tipoDocumento = tipoDocumento;
+        this.documento = documento;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.restringido = restringido;
+        this.nroLicencia = nroLicencia;
+        this.fechaVencimientoLicencia = fechaVencimientoLicencia;
+        this.activo = activo;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
     public Long getId() {
@@ -136,13 +144,5 @@ public class Interesado {
 
     public void setFechaVencimientoLicencia(LocalDate fechaVencimientoLicencia) {
         this.fechaVencimientoLicencia = fechaVencimientoLicencia;
-    }
-
-    public List<Prueba> getPruebas() {
-        return pruebas;
-    }
-
-    public void setPruebas(List<Prueba> pruebas) {
-        this.pruebas = pruebas;
     }
 }

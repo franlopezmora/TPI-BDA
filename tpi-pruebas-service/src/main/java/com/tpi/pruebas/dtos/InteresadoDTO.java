@@ -77,6 +77,6 @@ public class InteresadoDTO {
         this.fechaVencimientoLicencia = fechaVencimientoLicencia;
     }
     public  String getNombreCompleto(){
-        return nombre + "" + apellido;
+        return nombre + " " + apellido;
     }
 }
