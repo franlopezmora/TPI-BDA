@@ -1,66 +1,115 @@
-# TPI Backend 2025 - UTN FRC
+# 🚗 TPI Backend - Sistema de Gestión de Pruebas de Manejo
 
 Sistema de backend desarrollado como **Trabajo Práctico Integrador** de la materia **Backend de Aplicaciones** en la **Universidad Tecnológica Nacional - Facultad Regional Córdoba (UTN FRC)**.
 
-## 🧩 Microservicios
+## 🏗️ Arquitectura del Sistema
 
-El proyecto está organizado en 4 microservicios:
+El proyecto implementa una **arquitectura de microservicios** con los siguientes componentes:
 
-| Servicio              | Descripción                                                                 |
-|-----------------------|------------------------------------------------------------------------------|
-| `tpi-admin-service`   | Gestión de pruebas, interesados, empleados y zonas peligrosas               |
-| `tpi-reportes-service`| Generación de reportes y estadísticas del sistema                           |
-| `tpi-vehiculos-service`| Administración de vehículos y sus relaciones                               |
-| `tpi-gateway-service` | API Gateway (Spring Cloud Gateway) para enrutar las peticiones entrantes    |
-| `tpi-pruebas-service` | Microservicio de gestion de pruebas de manejo                               |
-| `tpi-notificaciones-service` | Gestiona las notificaciones via Discord, utilizado webhook           |
+### 🔧 Microservicios Backend
 
+| Servicio | Puerto | Descripción | Tecnologías |
+|----------|--------|-------------|-------------|
+| `tpi-admin-service` | 8081 | Gestión de empleados, interesados, pruebas y zonas peligrosas | Spring Boot 3.3.5, JPA, PostgreSQL |
+| `tpi-vehiculos-service` | 8082 | Administración de vehículos y sus relaciones | Spring Boot 3.3.5, JPA, PostgreSQL |
+| `tpi-reportes-service` | 8083 | Generación de reportes y estadísticas | Spring Boot 3.3.5, JPA, PostgreSQL |
+| `tpi-pruebas-service` | 8085 | Gestión específica de pruebas de manejo | Spring Boot 3.3.5, JPA, PostgreSQL |
+| `tpi-notificaciones-service` | 8084 | Sistema de notificaciones via Discord webhook | Spring Boot 3.3.5, WebClient |
+| `tpi-gateway-service` | 8080 | API Gateway para enrutamiento centralizado | Spring Cloud Gateway |
 
-## 🐘 Base de Datos
+### 🎨 Frontend
 
-- Motor: **PostgreSQL**
-- Montado en **Docker**
-- Dump inicial disponible en la carpeta `/db/dump.sql`
+| Componente | Puerto | Descripción | Tecnologías |
+|------------|-------|-------------|-------------|
+| `tpi-frontend` | 3000 | Interfaz de usuario web | Next.js 15.4.3, React 19.1.0, Tailwind CSS 4 |
 
-## 🚀 Ejecución del proyecto
+### 🗄️ Base de Datos
 
-### Requisitos
+- **Motor**: PostgreSQL 15
+- **Contenedor**: Docker
+- **Inicialización**: Script automático en `/docker/db/init.sql`
 
-- Java 21 o superior
-- Maven
-- Docker + Docker Compose
+## 🚀 Tecnologías Utilizadas
 
-### Ejecución rápida del proyecto
+### Backend
+- **Java 21** - Lenguaje principal
+- **Spring Boot 3.3.5** - Framework de desarrollo
+- **Spring Cloud Gateway** - API Gateway
+- **Spring Data JPA** - Persistencia de datos
+- **PostgreSQL** - Base de datos principal
+- **H2 Database** - Base de datos para testing
+- **OpenFeign** - Cliente HTTP declarativo
+- **SpringDoc OpenAPI** - Documentación de APIs
+- **Maven** - Gestión de dependencias
 
-#### 1. Clonar el proyecto
+### Frontend
+- **Next.js 15.4.3** - Framework React
+- **React 19.1.0** - Biblioteca de UI
+- **Tailwind CSS 4** - Framework CSS
+- **ESLint** - Linting de código
+
+### DevOps
+- **Docker** - Contenedores
+- **Docker Compose** - Orquestación de servicios
+- **Git** - Control de versiones
+
+## 📋 Requisitos Previos
+
+- **Java 21** o superior
+- **Maven 3.6+**
+- **Docker** y **Docker Compose**
+- **Node.js 18+** (para desarrollo frontend)
+- **Git**
+
+## 🛠️ Instalación y Ejecución
+
+### 1. Clonar el Repositorio
 
 ```bash
 git clone https://github.com/tuusuario/TPI-Backend.git
 cd TPI-Backend
 ```
 
-#### 2. Ejecutar todo automáticamente
+### 2. Ejecución Automática (Recomendado)
 
-Este proyecto cuenta con un script que construye todos los microservicios y levanta la base de datos y los contenedores:
+El proyecto incluye scripts automatizados para facilitar el despliegue:
 
 ```bash
+# En Linux/macOS
 ./build-all.sh
+docker-compose up --build
+
+# En Windows (PowerShell)
+.\build-all.sh
 docker-compose up --build
 ```
 
-Este comando:
+### 3. Ejecución Manual
 
-✅ Compila todos los microservicios (`admin`, `vehiculos`, `reportes`, `gateway`)  
-✅ Construye las imágenes Docker  
-✅ Levanta el contenedor de PostgreSQL  
-✅ Inicia todos los servicios juntos
+Si prefieres ejecutar los servicios manualmente:
 
-> 💡 Si usás Windows, asegurate de tener Git Bash o WSL para ejecutar el `.sh`. Si no, podés correr los comandos manualmente desde el archivo.
+```bash
+# Compilar todos los microservicios
+mvn clean install -DskipTests
 
+# Levantar la base de datos
+docker-compose up postgres -d
 
-#### 3. Resetear el entorno desde cero (base limpia)
+# Ejecutar microservicios (en terminales separadas)
+cd tpi-admin-service && mvn spring-boot:run
+cd tpi-vehiculos-service && mvn spring-boot:run
+cd tpi-reportes-service && mvn spring-boot:run
+cd tpi-pruebas-service && mvn spring-boot:run
+cd tpi-notificaciones-service && mvn spring-boot:run
+cd tpi-gateway-service && mvn spring-boot:run
 
-Si querés forzar que se ejecute de nuevo el init.sql (por ejemplo, para reiniciar la base), usá:
+# Ejecutar frontend
+cd tpi-frontend && npm install && npm run dev
+```
+
+### 4. Resetear el Entorno
+
+Para reiniciar completamente el sistema:
 
 ```bash
 docker-compose down -v
@@ -68,57 +117,123 @@ docker-compose down -v
 docker-compose up --build
 ```
 
-Esto borra los volúmenes (incluida la base de datos) y vuelve a levantar todo desde cero.
+## 🌐 Acceso a los Servicios
 
-### Acceso a los servicios
+Una vez ejecutado, los servicios estarán disponibles en:
 
-Una vez levantado el sistema, podés probar los endpoints desde el **API Gateway** (localhost:8080):
+| Servicio | URL | Descripción |
+|----------|-----|-------------|
+| **API Gateway** | http://localhost:8080 | Punto de entrada principal |
+| **Frontend** | http://localhost:3000 | Interfaz de usuario |
+| **Admin Service** | http://localhost:8081 | Microservicio de administración |
+| **Vehículos Service** | http://localhost:8082 | Microservicio de vehículos |
+| **Reportes Service** | http://localhost:8083 | Microservicio de reportes |
+| **Pruebas Service** | http://localhost:8085 | Microservicio de pruebas |
+| **Notificaciones Service** | http://localhost:8084 | Microservicio de notificaciones |
+| **PostgreSQL** | localhost:5432 | Base de datos |
 
-| Método | Endpoint                | Descripción                    |
-|--------|-------------------------|--------------------------------|
-| GET    | `/admin/hello`          | Test de disponibilidad         |
-| GET    | `/vehiculos/hello`      | Test de disponibilidad         |
-| GE     | `/reportes/hello`       | Test de disponibilidad         |
-| GET    | `/admin/empleados`      | Listado de empleados           |
-| POST   | `/admin/empleados`      | Alta de empleado               |
-| GET    | `/admin/interesados`    | Listado de interesados         |
-| POST   | `/admin/interesados`    | Alta de interesado             |
-| GET    | `/admin/pruebas`        | Listado de pruebas             |
-| POST   | `/admin/pruebas`        | Alta de prueba                 |
-| GET    | `/admin/notificaciones` | Listado de notificaciones (OK) |
-| POST   | `/admin/notificaciones` | Alta de notificación           |
+## 📚 Endpoints Principales
 
+### API Gateway (puerto 8080)
 
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/admin/hello` | Test de disponibilidad |
+| GET | `/admin/empleados` | Listado de empleados |
+| POST | `/admin/empleados` | Alta de empleado |
+| GET | `/admin/interesados` | Listado de interesados |
+| POST | `/admin/interesados` | Alta de interesado |
+| GET | `/admin/pruebas` | Listado de pruebas |
+| POST | `/admin/pruebas` | Alta de prueba |
+| GET | `/vehiculos/hello` | Test de disponibilidad |
+| GET | `/vehiculos/vehiculos` | Listado de vehículos |
+| POST | `/vehiculos/vehiculos` | Alta de vehículo |
+| GET | `/reportes/hello` | Test de disponibilidad |
+| GET | `/pruebas/hello` | Test de disponibilidad |
+| GET | `/notificaciones/hello` | Test de disponibilidad |
 
-## 📁 Estructura del proyecto
+### Documentación de APIs
+
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+
+## 📁 Estructura del Proyecto
 
 ```
 TPI-Backend/
-│
-├── db/                         # Dump SQL de la base PostgreSQL
-├── docker-compose.yml          # Levanta el contenedor de PostgreSQL
-├── build-all.sh                # Script para compilar y levantar todo automáticamente
-├── tpi-admin-service/          # Microservicio de gestión general
-├── tpi-reportes-service/       # Microservicio de reportes
-├── tpi-vehiculos-service/      # Microservicio de vehículos
-├── tpi-pruebas-service/        # Microservicio de pruebas
-├── tpi-notificaciones-service/ # Microservicio de notificaciones
-├── tpi-gateway-service/        # API Gateway
+├── 📁 docker/
+│   └── 📁 db/
+│       └── init.sql                 # Script de inicialización de BD
+├── 📁 tpi-admin-service/           # Microservicio de administración
+├── 📁 tpi-vehiculos-service/       # Microservicio de vehículos
+├── 📁 tpi-reportes-service/        # Microservicio de reportes
+├── 📁 tpi-pruebas-service/         # Microservicio de pruebas
+├── 📁 tpi-notificaciones-service/  # Microservicio de notificaciones
+├── 📁 tpi-gateway-service/         # API Gateway
+├── 📁 tpi-frontend/                # Aplicación frontend
+├── 📄 docker-compose.yml           # Configuración de contenedores
+├── 📄 build-all.sh                 # Script de construcción automática
+└── 📄 README.md                    # Este archivo
 ```
 
-## 🛡 Seguridad
+## 🧪 Testing
 
-A futuro, se prevé integrar autenticación y autorización con **Keycloak**.
+Cada microservicio incluye tests unitarios y de integración:
 
-## 👥 Equipo
+```bash
+# Ejecutar tests de un microservicio específico
+cd tpi-admin-service && mvn test
 
-- Nicolás Garay
-- Mariano Iturriza
-- Marcos Belli
-- Francisco López Mora
+# Ejecutar todos los tests
+mvn test
+```
+
+## 🔧 Configuración
+
+### Variables de Entorno
+
+Los servicios utilizan las siguientes configuraciones por defecto:
+
+- **Base de datos**: `localhost:5432`
+- **Usuario BD**: `postgres`
+- **Contraseña BD**: `postgres`
+- **Nombre BD**: `tpi`
+
+### Configuración de Discord (Notificaciones)
+
+Para configurar las notificaciones de Discord, edita el archivo de configuración del servicio de notificaciones con tu webhook URL.
+
+## 🚀 Despliegue en Producción
+
+Para desplegar en producción:
+
+1. Configurar variables de entorno apropiadas
+2. Usar una base de datos PostgreSQL externa
+3. Configurar un reverse proxy (nginx/apache)
+4. Implementar SSL/TLS
+5. Configurar monitoreo y logging
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📝 Licencia
+
+Este proyecto es parte del trabajo académico de la UTN FRC.
+
+## 👥 Equipo de Desarrollo
+
+- **Nicolás Garay** - Desarrollo backend
+- **Mariano Iturriza** - Desarrollo backend
+- **Marcos Belli** - Desarrollo backend
+- **Francisco López Mora** - Desarrollo frontend
 
 ---
 
-UTN - Facultad Regional Córdoba  
-Ingeniería en Sistemas de Información  
-Backend de Aplicaciones 2025
+**Universidad Tecnológica Nacional - Facultad Regional Córdoba**  
+**Ingeniería en Sistemas de Información**  
+**Backend de Aplicaciones 2025**
