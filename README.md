@@ -227,10 +227,10 @@ Este proyecto es parte del trabajo académico de la UTN FRC.
 
 ## 👥 Equipo de Desarrollo
 
-- **Nicolás Garay** - Desarrollo backend
-- **Mariano Iturriza** - Desarrollo backend
-- **Marcos Belli** - Desarrollo backend
-- **Francisco López Mora** - Desarrollo frontend
+- **Nicolás Garay**
+- **Mariano Iturriza**
+- **Marcos Belli**
+- **Francisco López Mora**
 
 ---
 
